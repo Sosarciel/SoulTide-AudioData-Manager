@@ -1,10 +1,9 @@
 {
+    "sample_rate": 22050,
     "characters": [
         "Dora",
-        "Haliva",
-        "Ithil",
-        "Micha",
-        "Philodoxy",
-        "QingHao"
-    ]
+        {"char": "Haliva","trainingset_duration": 100},
+        {"char": "Kokkoro","trainingset_duration": 300}
+    ],
+    "filelist_format": "{filepath}|{char_index}|{raw}"
 }
