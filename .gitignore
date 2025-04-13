@@ -24,9 +24,9 @@ data/*/resource/processed/**
 
 **/tmp/**
 
-build/**
--build/template
--buind/*/info.json
+build/*/*
+!build/*/info.json
+!build/template
 
 data/**
 
