@@ -29,3 +29,6 @@ build/**
 -buind/*/info.json
 
 data/**
+
+dataset
+dataset/**
