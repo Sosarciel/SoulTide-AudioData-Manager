@@ -1,0 +1,11 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "build/*/info.json"
+            ],
+            "url": "./schema/TrainingSetInfo.schema.json"
+        }
+    ],
+    "pylint.enabled": false
+}

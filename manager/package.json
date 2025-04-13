@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "cli": "ts-node src/Route.ts",
+    "build-schema": "powershell scripts/build-schema",
+    "start-pyserver": "start_python_server.bat"
+  },
+  "dependencies": {
+    "@zwa73/utils": "^1.0.192",
+    "axios": "^1.7.9",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.27",
+    "@types/node": "^22.13.0"
+  }
+}

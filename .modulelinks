@@ -1,0 +1,3 @@
+[submodule "Sosarciel-LaMDA-Modules"]
+	path = dataset
+	url = https://huggingface.co/datasets/zwa73/SoulTide-AudioData-Dataset.git

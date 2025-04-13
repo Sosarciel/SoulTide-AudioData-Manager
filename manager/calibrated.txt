@@ -1,0 +1,4 @@
+标记于 #tag 文本部分开头
+invalid 标记此段无效
+reidentify 标记此段进行过重新识别
+waitidentify 标记此段等待重新识别

@@ -1,0 +1,64 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"TrainingSetCharCfg": {
+			"$ref": "#/definitions/__type"
+		},
+		"TrainingSetInfo": {
+			"type": "object",
+			"properties": {
+				"characters": {
+					"description": "角色配置",
+					"type": "array",
+					"items": {
+						"anyOf": [
+							{
+								"$ref": "#/definitions/TrainingSetCharCfg"
+							},
+							{
+								"type": "string"
+							}
+						]
+					}
+				},
+				"filelist_format": {
+					"description": "filelist格式  \n{filepath}   : 音频路径\n{char_index} : 角色编号\n{langflag}   : srt对应内容",
+					"type": "string"
+				},
+				"sample_rate": {
+					"description": "采样率",
+					"type": "number"
+				}
+			},
+			"required": [
+				"characters",
+				"filelist_format",
+				"sample_rate"
+			]
+		},
+		"__type": {
+			"type": "object",
+			"properties": {
+				"char": {
+					"description": "角色名",
+					"type": "string"
+				},
+				"trainingset_duration": {
+					"description": "训练集时长/秒 默认无限",
+					"type": "number"
+				},
+				"min_duration": {
+					"description": "单条语音的最小持续时间/秒 默认1秒",
+					"type": "number"
+				},
+				"max_duration": {
+					"description": "单条语音的最大持续时间/秒 默认无限",
+					"type": "number"
+				}
+			},
+			"required": [
+				"char"
+			]
+		}
+	}
+}
