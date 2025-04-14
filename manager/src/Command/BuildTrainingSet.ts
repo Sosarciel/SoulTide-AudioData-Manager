@@ -108,7 +108,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                 await SFfmpegTool.resample(dat.outpath,outpath,sr);
                 return {outpath,nfmt:dat.nfmt};
             })
-            //验证时长并移动文件
+            //验证时长并移动文件  非全量并发移动可能造成随机输出
             .map(async(dat)=>{
                 if(dat==null) return undefined;
                 const {outpath,nfmt} = dat;
