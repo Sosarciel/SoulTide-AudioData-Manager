@@ -69,6 +69,7 @@ export type LangFlag = typeof LangFlag[number];
 export const LangFlagExt = [...LangFlag,'raw','tag'] as const;
 export type LangFlagExt = typeof LangFlagExt[number];
 
+/**解析srt标签内容 */
 export const parseSrtContent = (text:string)=>{
     const langMap:Record<string,string> = {};
 
@@ -84,7 +85,7 @@ export const parseSrtContent = (text:string)=>{
         });
     return langMap as PRecord<LangFlagExt,string>;
 }
-
+/**将对象化的srt标签内容转换为文本 */
 export const formatSrtContent = (langMap:PRecord<LangFlagExt,string>)=>{
     return Object.entries(langMap)
         .reduce((acc,[flag,content])=>{

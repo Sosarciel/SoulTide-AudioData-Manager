@@ -40,9 +40,9 @@ export const CmdBuildTrainingSet = (program: Command) => program
         const fileListCharMap:Record<string,string[]> = {};
         const charlist = Object.keys(fixedCfg);
         for(const char of charlist){
-            const splitTmpDit = getTmpSplitDir(char);
-            const trimTmpDir = getTmpTrimSilenceDir(char);
-            const tsetCharDir = getTsetCharDir(trainingSetName,char);
+            const splitTmpDit     = getTmpSplitDir(char);
+            const trimTmpDir      = getTmpTrimSilenceDir(char);
+            const tsetCharDir     = getTsetCharDir(trainingSetName,char);
             const tmpResampledDir = getTmpResampledDir(char,sr);
             await UtilFT.ensurePathExists(tmpResampledDir,{dir:true});
             await UtilFT.ensurePathExists(splitTmpDit,{dir:true});
@@ -82,36 +82,36 @@ export const CmdBuildTrainingSet = (program: Command) => program
                 const outpath = path.join(data.outDir,getSplitWavName(data,SplitSep));
                 const wavName = getSplitWavName(data,SplitSep);
                 const filepath = path.join('data',char,wavName)
-                const nfmt = format
+                const formatLine = format
                     .replace(/{filepath}/g,filepath)
                     .replace(/{char_index}/g,`${charCfg.charIdx}`)
                     .replace(/{raw}/g,checkOrThrow(langmap.raw));
                 if(!opt.force && await UtilFT.pathExists(outpath))
-                    return { inpath:outpath, nfmt};
+                    return { inpath:outpath, formatLine};
                 await splitWavByData(data,SplitSep);
-                return { inpath:outpath, nfmt};
+                return { inpath:outpath, formatLine};
             })
             //修剪静音
             .map(async (dat)=>{
                 if(dat==null) return undefined;
-                const {inpath,nfmt} = dat;
+                const {inpath,formatLine} = dat;
                 const outpath = path.join(trimTmpDir,path.parse(inpath).base);
                 if(!opt.force && await UtilFT.pathExists(outpath))
-                    return {outpath,nfmt};
+                    return {outpath,formatLine};
                 await SFfmpegTool.trimSilence(inpath,outpath,-50,0.1);
-                return {outpath,nfmt};
+                return {outpath,formatLine};
             })
             //重采样
             .map(async (dat)=>{
                 if(dat==null) return undefined;
                 const outpath = path.join(tmpResampledDir,path.parse(dat.outpath).base);
                 await SFfmpegTool.resample(dat.outpath,outpath,sr);
-                return {outpath,nfmt:dat.nfmt};
+                return {outpath,formatLine:dat.formatLine};
             })
             //验证时长并移动文件  非全量并发移动可能造成随机输出
             .map(async(dat)=>{
                 if(dat==null) return undefined;
-                const {outpath,nfmt} = dat;
+                const {outpath,formatLine} = dat;
                 if(totalTime > charCfg.trainingset_duration) return undefined;
                 const time = await getAudioDuratin(outpath);
                 if(totalTime > charCfg.trainingset_duration) return undefined;
@@ -121,7 +121,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                 totalTime+=time;
                 const cppath = path.join(tsetCharDir,path.parse(outpath).base);
                 await fs.promises.cp(outpath,cppath);
-                return nfmt;
+                return formatLine;
             })
             .toArray()).filter(s=>s!=undefined);
         };
