@@ -1,9 +1,9 @@
-import { ivk, matchProc, SFfmpegTool, SrtSegment, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
+import { UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
-import { mapChars, SliceData, splitWavByDataMP } from "./Util";
-import { DATA_PATH, getResAudioDir, getResDir, getResProcessedDir, getTmpConvertedDir, getTmpDir } from "../Define";
+import { SliceData, splitWavByDataMP } from "./Util";
 import fs from 'fs';
+
 
 
 

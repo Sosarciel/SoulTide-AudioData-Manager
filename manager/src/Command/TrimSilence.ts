@@ -1,8 +1,8 @@
 import { Command } from 'commander';
-import { SFfmpegTool, UtilFT } from '@zwa73/utils';
+import { UtilFT } from '@zwa73/utils';
 import { DATA_PATH } from '../Define';
-import path from 'pathe';
 import { mapChars } from './Util';
+import { SFfmpegTool } from '@zwa73/audio-utils';
 
 export const CmdTrimSilence = (program: Command) => program
     .command('Trim-Silence')

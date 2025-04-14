@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { matchProc, PRecord, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
+import { match, PRecord, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
 import { getCalibratedDir } from '../Define';
 import { formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtContent } from './Util';
 import { japanese_cleaners } from '../Bridge';
@@ -53,7 +53,7 @@ export const CmdProcessSrtLang = (program: Command) => program
                     if(raw==null) throw `srt文件 ${srtPath} 未初始化`;
                     //添加
                     if(!opt.remove && langmap[opt.flag]==null){
-                        return await matchProc(opt.flag as LangFlag,{
+                        return await match(opt.flag as LangFlag,{
                             en             :()=>{ throw `暂时不支持英文`; },
                             ['zh-CN']      :()=>{ throw `暂时不支持中文`; },
                             ja             :()=>{ throw `暂时不支持日语`; },

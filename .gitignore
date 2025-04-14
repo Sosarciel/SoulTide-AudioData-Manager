@@ -23,6 +23,7 @@ manager/old/**
 data/*/resource/processed/**
 
 **/tmp/**
+**/tmp2/**
 
 build/*/*
 !build/*/info.json

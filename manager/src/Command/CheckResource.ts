@@ -1,9 +1,10 @@
-import { ivk, SFfmpegTool, Stream, UtilFT } from "@zwa73/utils";
+import { ivk, Stream, UtilFT } from "@zwa73/utils";
 import { Command } from "commander";
 import path from 'pathe';
 import { DATA_PATH, getResDir } from "../Define";
 import { getAudioDuratin, mapChars } from "./Util";
 import fs from 'fs';
+import { SFfmpegTool } from "@zwa73/audio-utils";
 
 
 export const CmdCheckResource = (program: Command) => program

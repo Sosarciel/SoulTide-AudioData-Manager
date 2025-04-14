@@ -10,6 +10,7 @@ import { CmdBuildTrainingSet } from "./Command/BuildTrainingSet";
 import { CmdClearCache } from "./Command/ClearCache";
 import { CmdExtractValset } from "./Command/ExtractValset";
 import { CmdCalculateVITSLoss } from "./Command/CalculateCompositeLoss";
+import { CmdConvertWavToFlac } from "./Command/ConvertWavToFlac";
 
 export async function cliRoute() {
     CmdTrimSilence(program);
@@ -23,6 +24,7 @@ export async function cliRoute() {
     CmdClearCache(program);
     CmdExtractValset(program);
     CmdCalculateVITSLoss(program);
+    CmdConvertWavToFlac(program);
     program.parse(process.argv);
 }
 cliRoute();

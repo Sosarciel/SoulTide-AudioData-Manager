@@ -5,7 +5,9 @@
     "start-pyserver": "start_python_server.bat"
   },
   "dependencies": {
-    "@zwa73/utils": "^1.0.192",
+    "@zwa73/audio-utils": "^1.0.8",
+    "@zwa73/js-utils": "^1.0.20",
+    "@zwa73/utils": "^1.0.214",
     "axios": "^1.7.9",
     "commander": "^11.1.0"
   },

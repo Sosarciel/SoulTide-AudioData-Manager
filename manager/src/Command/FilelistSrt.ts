@@ -1,8 +1,9 @@
-import { SFfmpegTool, SrtSegment, Stream, UtilFunc } from "@zwa73/utils";
+import { SrtSegment, Stream, UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
 import fs from 'fs';
 import { getAudioDuratin } from "./Util";
+
 
 
 export const CmdFilelistSrt = (program: Command) => program

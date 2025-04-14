@@ -1,10 +1,11 @@
-import { SFfmpegTool, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
+import { Stream, UtilFT, UtilFunc } from "@zwa73/utils";
 import { Command } from "commander";
 import path from 'pathe';
 import { getCalibratedDir, getResProcessedDir, getTmpResampledDir, getTmpSplitDir, getTmpTrimSilenceDir, getTsetCharDir, getTsetDataDir, getTsetFilelistPath, getTsetInfoPath } from "../Define";
-import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
+import { TrainingSetInfo } from "../Schema.schema";
 import fs from 'fs';
 import { SliceData, parseSrtContent, getSplitWavName, splitWavByData, getAudioDuratin, fixedCharCfg } from "./Util";
+import { SFfmpegTool } from "@zwa73/audio-utils";
 
 
 const checkOrThrow = (str?:string)=>{

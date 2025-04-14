@@ -1,10 +1,10 @@
-import { ivk, SFfmpegTool, Stream, UtilFT } from "@zwa73/utils";
+import { ivk, Stream, UtilFT } from "@zwa73/utils";
 import { Command } from "commander";
 import path from 'pathe';
-import { DATA_PATH, getResDir, getTsetCharDir, getTsetInfoPath } from "../Define";
-import { fixedCharCfg, getAudioDuratin, mapChars } from "./Util";
-import fs from 'fs';
+import { getTsetCharDir, getTsetInfoPath } from "../Define";
+import { fixedCharCfg, getAudioDuratin } from "./Util";
 import { TrainingSetInfo } from "../Schema.schema";
+import { SFfmpegTool } from "@zwa73/audio-utils";
 
 
 

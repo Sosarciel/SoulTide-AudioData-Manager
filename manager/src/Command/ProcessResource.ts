@@ -1,9 +1,10 @@
-import { matchProc, SFfmpegTool, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
+import { match, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
 import { eachChars, SliceData, splitWavByDataMP } from "./Util";
 import { DATA_PATH, getResAudioDir, getResProcessedDir, getResSrtDir, getTmpConvertedDir, getTmpResampledDir } from "../Define";
 import fs from 'fs';
+import { SFfmpegTool } from "@zwa73/audio-utils";
 
 
 
@@ -37,7 +38,7 @@ export const CmdProcessResource = (program: Command) => program
                     const ext = path.parse(audioPath).ext as VaildExt;
                     if(!VaildExt.includes(ext))
                         throw `音频文件 ${audioPath} 不是有效格式`;
-                    return await matchProc(ext,{
+                    return await match(ext,{
                         '.wav' :async ()=> audioPath,
                         '.flac':async ()=> {
                             //console.log(`正在转换 ${audioPath}`);

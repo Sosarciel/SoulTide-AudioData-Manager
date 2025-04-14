@@ -1,7 +1,8 @@
-import { PRecord, SFfmpegTool, SrtSegment, Stream, throwError, UtilFT } from "@zwa73/utils";
+import { PRecord, SrtSegment, Stream, UtilFT } from "@zwa73/utils";
 import path from 'pathe';
-import { DATA_PATH, getCharDir } from "../Define";
+import { getCharDir } from "../Define";
 import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
+import { SFfmpegTool } from "@zwa73/audio-utils";
 
 
 export type SliceData ={
