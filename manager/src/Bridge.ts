@@ -3,6 +3,12 @@ import path from 'pathe';
 import { ROOT_PATH } from './Define';
 import { spawn } from 'child_process';
 
+const postTool = UtilCom.httpPostJson().option({
+    hostname: '127.0.0.1',
+    path: '/japanese_cleaners',
+    port: 4242,
+});
+
 let isStart:Promise<void>|null = null as any;
 const start = ()=> {
     if(isStart!=null) return isStart;
@@ -34,12 +40,12 @@ const start = ()=> {
             console.error(`Server stderr: ${data}`);
             if (data.toString().includes('Running on')) {
                 console.log("Server started with stderr");
-                const response1 = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: 'sssss' });
-                console.log('testresp1',response1.data.result);
-                const response2 = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: 'aaaaa' });
-                console.log('testresp2',response2.data.result);
-                const response3 = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: 'bbbbb' });
-                console.log('testresp3',response3.data.result);
+                const response1 = await postTool.once({}, { text: 'sssss' });
+                console.log('testresp1',response1?.data);
+                const response2 = await postTool.once({}, { text: 'aaaaa' });
+                console.log('testresp2',response2?.data);
+                const response3 = await postTool.once({}, { text: 'bbbbb' });
+                console.log('testresp3',response3?.data);
                 resolve();
             }
         });
@@ -58,11 +64,7 @@ export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
         const response = await queue.enqueue(
-            async ()=>await UtilCom.httpPostJson().once({
-                hostname: '127.0.0.1',
-                path: '/japanese_cleaners',
-                port: 4242,
-            },{ text: inputText })
+            async () => postTool.once({},{ text: inputText })
         );
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
         return response?.data as string;
