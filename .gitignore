@@ -14,7 +14,7 @@
 
 **/Kokkoro/full_pack/sliced_audio/*.wav
 
-manager/node_modules/**
+**/node_modules/**
 manager/minconda/**
 
 manager/old/**
