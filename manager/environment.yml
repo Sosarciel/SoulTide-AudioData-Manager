@@ -1,4 +1,4 @@
-name: SoulTide-Collection-VITS-TrainingSet\minconda
+name: SoulTide-AudioData-Manager\minconda
 channels:
   - defaults
 dependencies:
