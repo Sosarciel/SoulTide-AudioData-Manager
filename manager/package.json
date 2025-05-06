@@ -6,9 +6,9 @@
   },
   "dependencies": {
     "@zwa73/audio-utils": "^1.0.8",
-    "@zwa73/js-utils": "^1.0.20",
-    "@zwa73/utils": "^1.0.214",
-    "axios": "^1.7.9",
+    "@zwa73/js-utils": "^1.0.22",
+    "@zwa73/modular-mixer": "^1.0.4",
+    "@zwa73/utils": "^1.0.218",
     "commander": "^11.1.0"
   },
   "devDependencies": {

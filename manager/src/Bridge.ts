@@ -1,5 +1,4 @@
-import { sleep, SLogger, UtilFunc } from '@zwa73/utils';
-import axios from 'axios';
+import { PromiseQueue, UtilCom } from '@zwa73/utils';
 import path from 'pathe';
 import { ROOT_PATH } from './Define';
 import { spawn } from 'child_process';
@@ -54,23 +53,19 @@ const start = ()=> {
     return isStart;
 }
 
-let index= 0;
-const getIdx = ()=> {
-    index++;
-    if(index>=4)
-        index=0;
-    return index;
-}
-
+const queue = new PromiseQueue({maxConcurrent:4});
 export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
-        const response = await UtilFunc.queueProc(
-            `japanese_cleaners_${getIdx()}`,
-            async ()=>await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
+        const response = await queue.enqueue(
+            async ()=>await UtilCom.httpPostJson().once({
+                hostname: '127.0.0.1',
+                path: '/japanese_cleaners',
+                port: 4242,
+            },{ text: inputText })
         );
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
-        return response.data.result as string;
+        return response?.data as string;
     }catch(e){
         console.log('无法解析',inputText);
         return '';
