@@ -1,13 +1,11 @@
-import { PromiseQueue, UtilCom } from '@zwa73/utils';
+import { PromiseQueue, UtilHttp } from '@zwa73/utils';
 import path from 'pathe';
 import { ROOT_PATH } from './Define';
 import { spawn } from 'child_process';
 
-const postTool = UtilCom.httpPostJson().option({
-    hostname: '127.0.0.1',
-    path: '/japanese_cleaners',
-    port: 4242,
-});
+const postTool = UtilHttp
+    .url('http://127.0.0.1:4242/japanese_cleaners')
+    .postJson().finalize({});
 
 let isStart:Promise<void>|null = null as any;
 const start = ()=> {
@@ -40,11 +38,11 @@ const start = ()=> {
             console.error(`Server stderr: ${data}`);
             if (data.toString().includes('Running on')) {
                 console.log("Server started with stderr");
-                const response1 = await postTool.once({}, { text: 'sssss' });
+                const response1 = await postTool.once({ text: 'sssss' });
                 console.log('testresp1',response1?.data);
-                const response2 = await postTool.once({}, { text: 'aaaaa' });
+                const response2 = await postTool.once({ text: 'aaaaa' });
                 console.log('testresp2',response2?.data);
-                const response3 = await postTool.once({}, { text: 'bbbbb' });
+                const response3 = await postTool.once({ text: 'bbbbb' });
                 console.log('testresp3',response3?.data);
                 resolve();
             }
@@ -64,7 +62,7 @@ export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
         const response = await queue.enqueue(
-            async () => postTool.once({},{ text: inputText })
+            async () => postTool.once({ text: inputText })
         );
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
         return response?.data as string;
