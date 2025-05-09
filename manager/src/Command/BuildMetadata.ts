@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import fs from 'fs';
-import { pipe, UtilFT } from '@zwa73/utils';
+import { pipe, throwError, UtilFT } from '@zwa73/utils';
 import path from 'pathe';
 import { DATA_PATH, getResAudioDir, getResDir } from '../Define';
 
@@ -22,6 +22,8 @@ export const CmdBuildMetadata = (program: Command) => program
             await pipe(
                 UtilFT.fileSearchRegex(audioDir, /.+\.flac$/i),
                 async fps => Promise.all(fps.map(async fp =>{
+                    if(!/.+\.flac$/.test(fp))
+                        console.log(`错误的文件名: ${fp}`);
                     const rfp = path.relative(resDir,fp);
                     return {filepath:rfp, text:path.parse(rfp).name};
                 })),
