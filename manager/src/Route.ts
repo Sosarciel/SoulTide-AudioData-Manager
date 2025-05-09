@@ -11,6 +11,8 @@ import { CmdClearCache } from "./Command/ClearCache";
 import { CmdExtractValset } from "./Command/ExtractValset";
 import { CmdCalculateVITSLoss } from "./Command/CalculateCompositeLoss";
 import { CmdConvertWavToFlac } from "./Command/ConvertWavToFlac";
+import { CmdBuildConfig } from "./Command/BuildConfig";
+import { CmdBuildMetadata } from "./Command/BuildMetadata";
 
 export async function cliRoute() {
     CmdTrimSilence(program);
@@ -25,6 +27,8 @@ export async function cliRoute() {
     CmdExtractValset(program);
     CmdCalculateVITSLoss(program);
     CmdConvertWavToFlac(program);
+    CmdBuildConfig(program);
+    CmdBuildMetadata(program);
     program.parse(process.argv);
 }
 cliRoute();
