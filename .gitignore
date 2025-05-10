@@ -24,6 +24,7 @@ data/*/resource/processed/**
 
 **/tmp/**
 **/tmp2/**
+tmp.txt
 
 build/*/*
 !build/*/info.json
