@@ -16,7 +16,7 @@ export const CmdProcessResource = (program: Command) => program
     .alias("processresource")
     .description("根据srt对raw进行切分")
     .argument('<characters>', '以 空格 分隔的角色名', (str) => str.split(' '))
-    .requiredOption('-s, --sample_rate <sampleRate>', '采样率', (str) => parseInt(str), 22050)
+    //.requiredOption('-s, --sample_rate <sampleRate>', '采样率', (str) => parseInt(str), 22050)
     .action(async (characters:string[],opt:{sampleRate:number}) => {
         if(characters[0]=='*') characters = await fs.promises.readdir(DATA_PATH);
         const sliceDatas: SliceData[] = [];
