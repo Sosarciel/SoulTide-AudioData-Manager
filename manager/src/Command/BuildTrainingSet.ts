@@ -4,7 +4,7 @@ import path from 'pathe';
 import { getCalibratedDir, getResProcessedDir, getTmpResampledDir, getTmpSplitDir, getTmpTrimSilenceDir, getTsetCharDir, getTsetDataDir, getTsetFilelistPath, getTsetInfoPath } from "../Define";
 import { TrainingSetInfo } from "../Schema.schema";
 import fs from 'fs';
-import { SliceData, parseSrtContent, getSplitWavName, splitWavByData, getAudioDuratin, fixedCharCfg } from "./Util";
+import { SliceData, parseSrtContent, getSplitWavName, splitWavByData, getAudioDuratin, fixedCharCfg, LangFlagExt } from "./Util";
 import { SFfmpegTool } from "@zwa73/audio-utils";
 
 
@@ -82,10 +82,17 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             const outpath = path.join(data.outDir,getSplitWavName(data,SplitSep));
                             const wavName = getSplitWavName(data,SplitSep);
                             const filepath = path.join('data',char,wavName)
-                            const formatLine = format
+
+                            let formatLine = format
                                 .replace(/{filepath}/g,filepath)
-                                .replace(/{char_index}/g,`${charCfg.charIdx}`)
-                                .replace(/{raw}/g,checkOrThrow(langmap.raw));
+                                .replace(/{char_index}/g,`${charCfg.charIdx}`);
+
+                            LangFlagExt.map(flag => {
+                                const reg = new RegExp(`{${flag}}`,'g');
+                                if(reg.test(formatLine))
+                                    formatLine = formatLine.replace(reg,checkOrThrow(langmap[flag as LangFlagExt]));
+                            });
+
                             if(!opt.force && await UtilFT.pathExists(outpath))
                                 return { inpath:outpath, formatLine};
                             await splitWavByData(data,SplitSep);
