@@ -74,21 +74,21 @@ export async function japanese_cleaners(inputText:string) {
     }
 }
 
-//if(true) (async ()=>{
-//    const list = [
-//        "他に何したい?",
-//        "うち、何でも付き合うよ",
-//        "一日中ゲーム付けだったし、何か別のことしない?",
-//        "いや、ただベランダで風にあたろうって意味だけど、また変なこと考えたでしょう。",
-//    ]
-//
-//    const a100 = Array.from({length:100}).fill(undefined);
-//
-//    await Promise.all(list.map(async (v,idx) => {
-//        console.log(await japanese_cleaners(v));
-//    }));
-//    console.log('complete');
-//})();
+if(false) (async ()=>{
+    const list = [
+        "他に何したい?",
+        "うち、何でも付き合うよ",
+        "一日中ゲーム付けだったし、何か別のことしない?",
+        "いや、ただベランダで風にあたろうって意味だけど、また変なこと考えたでしょう。",
+    ]
+
+    const a100 = Array.from({length:100}).fill(undefined);
+
+    await Promise.all(list.map(async (v,idx) => {
+        console.log(await japanese_cleaners(v));
+    }));
+    console.log('complete');
+})();
 
 
 //(async()=>{

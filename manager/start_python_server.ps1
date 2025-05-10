@@ -1,2 +1,2 @@
 conda activate ./minconda
-hypercorn -w 4 --bind 127.0.0.1:4242 python_server.server:app
+uvicorn python_server.server:app --host 127.0.0.1 --port 4242 --workers 4

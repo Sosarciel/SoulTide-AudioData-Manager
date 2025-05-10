@@ -2,6 +2,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))  # 添加当前目录到 Python 路径
 
+import asyncio
+
 from quart import Quart, request, jsonify
 from cleaners import japanese_cleaners
 
@@ -18,4 +20,6 @@ async def process_text():
     return jsonify({'result': result})
 
 if __name__ == '__main__':
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
     app.run()
