@@ -1,4 +1,4 @@
-import { PromiseQueue, UtilHttp } from '@zwa73/utils';
+import { PromiseQueue, sleep, UtilHttp } from '@zwa73/utils';
 import path from 'pathe';
 import { ROOT_PATH } from './Define';
 import { spawn } from 'child_process';
@@ -57,20 +57,38 @@ const start = ()=> {
     return isStart;
 }
 
-const queue = new PromiseQueue({maxConcurrent:4});
+const queue = new PromiseQueue({maxConcurrent:1});
 export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
         const response = await queue.enqueue(
             async () => postTool.once({ text: inputText })
         );
+        const data = response?.data as { result: string };
+        console.log(data)
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
-        return response?.data as string;
+        return data.result as string;
     }catch(e){
         console.log('无法解析',inputText);
         return '';
     }
 }
+
+//if(true) (async ()=>{
+//    const list = [
+//        "他に何したい?",
+//        "うち、何でも付き合うよ",
+//        "一日中ゲーム付けだったし、何か別のことしない?",
+//        "いや、ただベランダで風にあたろうって意味だけど、また変なこと考えたでしょう。",
+//    ]
+//
+//    const a100 = Array.from({length:100}).fill(undefined);
+//
+//    await Promise.all(list.map(async (v,idx) => {
+//        console.log(await japanese_cleaners(v));
+//    }));
+//    console.log('complete');
+//})();
 
 
 //(async()=>{

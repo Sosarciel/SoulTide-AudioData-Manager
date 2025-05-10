@@ -16,22 +16,19 @@ const checkAndParse = (seg:SrtSegment)=>{
 const initSeg = (seg:SrtSegment)=>{
     const langmap = checkAndParse(seg);
 
-    const parsed = {
-        raw:langmap.raw,
-        tag:langmap.tag
-    }
-
     const nseg:SrtSegment = {
         ...seg,
-        text: formatSrtContent(parsed)
+        text: formatSrtContent(langmap)
     }
     return nseg;
 }
 
 const addLang = async (seg:SrtSegment,flag:LangFlagExt)=>{
     const langmap = checkAndParse(seg);
-    if(langmap[flag]!=null)
-        throw `srtseg ${seg} 已经存在 ${flag}`;
+    if(langmap[flag]!=null){
+        console.log(`srtseg 已经存在 ${flag} 已跳过`);
+        return seg;
+    }
 
     return await match(flag as LangFlag,{
         en             :()=>{ throw `暂时不支持英文`; },
