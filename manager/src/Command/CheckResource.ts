@@ -24,11 +24,11 @@ export const CmdCheckResource = (program: Command) => program
             await Promise.all(processedList.map(async (processedPath)=>{
                 const ext = path.parse(processedPath).ext;
                 if(ext !== '.wav')
-                    throw `音频文件 ${processedPath} 不是wav格式`;
+                    console.log(`音频文件 ${processedPath} 不是wav格式`);
                 funcs.push(async ()=>{
                     //console.log(`正在检查 ${processedPath}`);
                     if(!(await SFfmpegTool.isMono(processedPath)))
-                        throw `音频文件 ${processedPath} 不是单声道`;
+                        console.log(`音频文件 ${processedPath} 不是单声道`);
                     const duration = await getAudioDuratin(processedPath);
                     if (!durations[character]) durations[character] = 0;
                     durations[character] += duration;

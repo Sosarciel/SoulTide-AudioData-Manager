@@ -105,7 +105,11 @@ export const CmdBuildTrainingSet = (program: Command) => program
                         .map(async data=>{
                             if(data==null) return undefined;
                             const outpath = path.join(tmpResampledDir,path.parse(data.outpath).base);
-                            await SFfmpegTool.resample(data.outpath,outpath,sr);
+
+                            if(await SFfmpegTool.isMono(data.outpath))
+                                await SFfmpegTool.resample(data.outpath,outpath,sr);
+                            else await SFfmpegTool.resample(data.outpath,outpath,sr,1);
+
                             return {outpath,formatLine:data.formatLine};
                         })
                         //验证时长并移动文件  非全量并发移动可能造成随机输出

@@ -2,7 +2,7 @@ import { match, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
 import { eachChars, SliceData, splitWavByDataMP } from "./Util";
-import { DATA_PATH, getResAudioDir, getResProcessedDir, getResSrtDir, getTmpConvertedDir, getTmpResampledDir } from "../Define";
+import { DATA_PATH, getResAudioDir, getResProcessedDir, getResSrtDir, getTmpConvertedDir } from "../Define";
 import fs from 'fs';
 import { SFfmpegTool } from "@zwa73/audio-utils";
 

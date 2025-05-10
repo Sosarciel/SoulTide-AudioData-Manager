@@ -30,11 +30,11 @@ export const CmdCheckTrainingSet = (program: Command) => program
             const tsetList = await UtilFT.fileSearchGlob(tsetCharDir,'*');
             await Promise.all(tsetList.map(async (tsetPath)=>{
                 const ext = path.parse(tsetPath).ext;
-                if(ext !== '.wav') throw `音频文件 ${tsetPath} 不是wav格式`;
+                if(ext !== '.wav') throw console.log(`音频文件 ${tsetPath} 不是wav格式`);
                 funcs.push(async ()=>{
                     //console.log(`正在检查 ${processedPath}`);
                     if(!(await SFfmpegTool.isMono(tsetPath)))
-                        throw `音频文件 ${tsetPath} 不是单声道`;
+                        console.log(`音频文件 ${tsetPath} 不是单声道`);
                     const duration = await getAudioDuratin(tsetPath);
                     if (!durations[character]) durations[character] = 0;
                     durations[character] += duration;
