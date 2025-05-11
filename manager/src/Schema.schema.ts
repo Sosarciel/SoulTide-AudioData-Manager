@@ -6,7 +6,7 @@ export type TrainingSetCharCfg = {
     char:string;
     /**训练集时长/秒 默认无限 */
     trainingset_duration?:number;
-    /**单条语音的最小持续时间/秒 默认1秒 */
+    /**单条语音的最小持续时间/秒 默认 1 秒 */
     min_duration?:number;
     /**单条语音的最大持续时间/秒 默认无限 */
     max_duration?:number;

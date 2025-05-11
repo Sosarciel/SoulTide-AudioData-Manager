@@ -65,7 +65,7 @@ export async function japanese_cleaners(inputText:string) {
             async () => postTool.once({ text: inputText })
         );
         const data = response?.data as { result: string };
-        console.log(data)
+        //console.log(data)
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
         return data.result as string;
     }catch(e){
