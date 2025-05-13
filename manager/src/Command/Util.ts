@@ -1,8 +1,9 @@
-import { PRecord, SrtSegment, Stream, UtilFT } from "@zwa73/utils";
+import { match, PRecord, SrtSegment, Stream, UtilFT } from "@zwa73/utils";
 import path from 'pathe';
 import { getCharDir } from "../Define";
 import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
 import { SFfmpegTool } from "@zwa73/audio-utils";
+import { japanese_cleaners } from "../Bridge";
 
 
 export type SliceData ={
@@ -125,3 +126,9 @@ export const fixedCharCfg = (info:TrainingSetInfo)=>{
             [cfg.char]:cfg
         }),{} as Record<string,FixedCfg>);
 }
+
+
+export const convertLang = async (flag:LangFlag,raw:string)=> await match(flag,{
+        ['ja-phoneme'] :()=>japanese_cleaners(raw!)
+    },
+    flag => {throw `暂时不支持 ${flag}`});

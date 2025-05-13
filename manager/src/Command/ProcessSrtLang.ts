@@ -1,8 +1,7 @@
 import { Command } from 'commander';
 import { match, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
 import { getCalibratedDir } from '../Define';
-import { formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtContent } from './Util';
-import { japanese_cleaners } from '../Bridge';
+import { convertLang, formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtContent } from './Util';
 import fs from 'fs';
 
 
@@ -13,6 +12,7 @@ const checkAndParse = (seg:SrtSegment)=>{
     return langmap;
 }
 
+/**初始化seg */
 const initSeg = (seg:SrtSegment)=>{
     const langmap = checkAndParse(seg);
 
@@ -23,36 +23,30 @@ const initSeg = (seg:SrtSegment)=>{
     return nseg;
 }
 
+/**为seg添加语言 */
 const addLang = async (seg:SrtSegment,flag:LangFlagExt)=>{
+    if(flag=='tag' || flag=='raw')
+        throw `无法添加 ${flag}`;
+
     const langmap = checkAndParse(seg);
     if(langmap[flag]!=null){
         console.log(`srtseg 已经存在 ${flag} 已跳过`);
         return seg;
     }
 
-    return await match(flag as LangFlag,{
-        en             :()=>{ throw `暂时不支持英文`; },
-        ['zh-CN']      :()=>{ throw `暂时不支持中文`; },
-        ja             :()=>{ throw `暂时不支持日语`; },
-        ['ja-phoneme'] :async flg =>{
-            //console.log(`正在转换 ${text}`);
-            const res = await japanese_cleaners(langmap.raw!);
-            //console.log(`转换结果 ${res}`);
-            const nseg:SrtSegment = {
-                ...seg,
-                text: formatSrtContent({
-                    ...langmap,
-                    [flg]:res
-                })
-            }
-            return nseg;
-        }
-    });
+    return {
+        ...seg,
+        text: formatSrtContent({
+            ...langmap,
+            [flag]:await convertLang(flag,langmap.raw!)
+        })
+    };
 }
 
+/**为seg删除语言 */
 const removeLang = async (seg:SrtSegment,flag:LangFlagExt)=>{
     const langmap = checkAndParse(seg);
-    if(flag=='none' as LangFlag || flag=='tag' as LangFlag || flag=='raw' as LangFlag)
+    if(flag=='none' as LangFlag || flag=='tag' || flag=='raw')
         throw `无法移除 ${flag}`;
     delete langmap[flag];
     return {
