@@ -105,7 +105,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             const outpath = path.join(trimTmpDir,path.parse(inpath).base);
                             if(!opt.force && await UtilFT.pathExists(outpath))
                                 return {outpath,formatLine};
-                            await SFfmpegTool.trimSilence(inpath,outpath,-50,0.1);
+                            await SFfmpegTool.trimSilence(inpath,outpath,-50,0.05);
                             return {outpath,formatLine};
                         })
                         //重采样
