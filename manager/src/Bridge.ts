@@ -67,10 +67,11 @@ export async function japanese_cleaners(inputText:string) {
         const data = response?.data as { result: string };
         //console.log(data)
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
+        if(data.result==undefined) throw 'undefined result';
         return data.result as string;
     }catch(e){
         console.log('无法解析',inputText);
-        return '';
+        return '无法解析';
     }
 }
 
