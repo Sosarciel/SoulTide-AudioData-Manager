@@ -1,14 +1,14 @@
 import { Command } from 'commander';
 import { UtilFT } from '@zwa73/utils';
 import { DATA_PATH } from '../Define';
-import { mapChars } from './Util';
+import { mapChars, parseStrlist } from './Util';
 import { SFfmpegTool } from '@zwa73/audio-utils';
 
 export const CmdTrimSilence = (program: Command) => program
     .command('Trim-Silence')
     .alias('trimsilence')
     .description('删除指定角色名的音频文件中的静音部分')
-    .argument('<characters>', '以 空格 分隔的角色名', (str) => str.split(' '))
+    .argument('<characters>', '以 空格 分隔的角色名', parseStrlist)
     .action(async (characters: string[]) => {
         const iomap:Record<string,string> = {};
 

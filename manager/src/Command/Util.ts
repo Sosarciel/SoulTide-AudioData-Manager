@@ -132,3 +132,9 @@ export const convertLang = async (flag:LangFlag,raw:string)=> await match(flag,{
         ['ja-phoneme'] :()=>japanese_cleaners(raw!)
     },
     flag => {throw `暂时不支持 ${flag}`});
+
+export const parseStrlist = (str:string)=>str
+    .split(/( |,)/)
+    .map(s=>s.trim())
+    .filter(s=>s.length>0)
+    .filter(s=>s!=',')

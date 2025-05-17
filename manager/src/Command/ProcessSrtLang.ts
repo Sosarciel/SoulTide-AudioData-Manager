@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { match, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
 import { getCalibratedDir } from '../Define';
-import { convertLang, formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtContent } from './Util';
+import { convertLang, formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtContent, parseStrlist } from './Util';
 import fs from 'fs';
 
 
@@ -59,7 +59,7 @@ export const CmdProcessSrtLang = (program: Command) => program
     .command('Process-SrtLang')
     .alias('processsrtlang')
     .description('给srt文件添加语言')
-    .argument('<characters>', '以 空格 分隔的角色名', (str) => str.split(' '))
+    .argument('<characters>', '以 空格 分隔的角色名', parseStrlist)
     .option(`-f, --flag <${LangFlag.join('|')}>`, '语言标记, 尝试进行转换, 不填或raw则会进行初始化','raw')
     .option(`-r, --remove`, '移除语言标记, 会保留raw和tag',false)
     .action(async (characters: string[],opt:{flag:LangFlag|'raw', remove:boolean}) => {

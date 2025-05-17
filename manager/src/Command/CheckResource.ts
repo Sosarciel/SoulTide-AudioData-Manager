@@ -2,7 +2,7 @@ import { ivk, Stream, UtilFT } from "@zwa73/utils";
 import { Command } from "commander";
 import path from 'pathe';
 import { DATA_PATH, getResDir } from "../Define";
-import { getAudioDuratin, mapChars } from "./Util";
+import { getAudioDuratin, mapChars, parseStrlist } from "./Util";
 import fs from 'fs';
 import { SFfmpegTool } from "@zwa73/audio-utils";
 
@@ -11,7 +11,7 @@ export const CmdCheckResource = (program: Command) => program
     .command("Check-Resource")
     .alias("checkresource")
     .description("检查处理完成的resource")
-    .argument('<characters>', '以 空格 分隔的角色名', (str) => str.split(' '))
+    .argument('<characters>', '以 空格 分隔的角色名', parseStrlist)
     .action(async (characters:string[]) => {
         const funcs:(()=>Promise<void>)[]=[];
         const durations: { [key: string]: number } = {};

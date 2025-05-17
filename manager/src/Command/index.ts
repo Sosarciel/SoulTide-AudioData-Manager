@@ -14,6 +14,7 @@ import { CmdBuildConfig } from "./BuildConfig";
 import { CmdBuildMetadata } from "./BuildMetadata";
 import { CmdConvertLang } from "./ProcessLang";
 import { CmdTrimSilence } from "./TrimSilence";
+import { CmdExtractSrt } from "./ExtractSrt";
 
 export async function cmdRoute(program:Command) {
     CmdTrimSilence(program);
@@ -31,4 +32,5 @@ export async function cmdRoute(program:Command) {
     CmdBuildConfig(program);
     CmdBuildMetadata(program);
     CmdConvertLang(program);
+    CmdExtractSrt(program);
 }

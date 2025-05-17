@@ -1,7 +1,7 @@
 import { match, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
-import { eachChars, SliceData, splitWavByDataMP } from "./Util";
+import { eachChars, parseStrlist, SliceData, splitWavByDataMP } from "./Util";
 import { DATA_PATH, getResAudioDir, getResProcessedDir, getResSrtDir, getTmpConvertedDir } from "../Define";
 import fs from 'fs';
 import { SFfmpegTool } from "@zwa73/audio-utils";
@@ -15,7 +15,7 @@ export const CmdProcessResource = (program: Command) => program
     .command("Process-Resource")
     .alias("processresource")
     .description("根据srt对raw进行切分")
-    .argument('<characters>', '以 空格 分隔的角色名', (str) => str.split(' '))
+    .argument('<characters>', '以 空格 分隔的角色名', parseStrlist)
     //.requiredOption('-s, --sample_rate <sampleRate>', '采样率', (str) => parseInt(str), 22050)
     .action(async (characters:string[],opt:{sampleRate:number}) => {
         if(characters[0]=='*') characters = await fs.promises.readdir(DATA_PATH);
