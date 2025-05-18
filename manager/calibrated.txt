@@ -3,5 +3,5 @@ invalid 标记此段无效
 reidentify 标记此段进行过重新识别
 waitidentify 标记此段等待重新识别
 
-0.01对齐
+0.005对齐
 尽量剪除换气
