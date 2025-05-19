@@ -65,7 +65,7 @@ export const CmdProcessResource = (program: Command) => program
                             const outName = getSplitWavName(audioPath,index);
                             //console.log(audioPath,path.join(processedDir,outName))
                             const {start,end} = seg;
-                            nstream.cut(start/1000, (end-start)/1000);
+                            nstream.trim({start:start/1000,end:end/1000});
                             //console.log(2);
                             return ()=>nstream.append(audioPath,path.join(processedDir,outName));
                         });

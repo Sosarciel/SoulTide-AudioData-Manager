@@ -28,7 +28,7 @@ export const CmdSplitAudio = (program: Command) => program
         await Stream.from(srtseg.map((seg,index)=>{
             const {start,end} = seg;
             const outPath = path.join(outDir,getSplitWavName(srtPath,index))
-            return ()=>FfmpegStream.create().cut(start,end).append(wavPath,outPath);
+            return ()=>FfmpegStream.create().trim({start:start/1000,end:end/1000}).append(wavPath,outPath);
         }))
         .map(async fn=>fn())
         .append();

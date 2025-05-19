@@ -106,7 +106,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                                 return { outFilePath, audioName, formatLine};
 
                             //剪切
-                            stream.cut(start/1000, (end-start)/1000);
+                            stream.trim({start:start/1000,end:end/1000});
                             //修剪静音
                             stream.trimSilence({silence:0.05,threshold:-50});
                             //重采样
