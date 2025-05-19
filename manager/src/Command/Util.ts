@@ -1,9 +1,9 @@
 import { match, PRecord, SrtSegment, Stream, UtilFT } from "@zwa73/utils";
-import path from 'pathe';
 import { getCharDir } from "../Define";
 import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
-import { SFfmpegTool } from "@zwa73/audio-utils";
+import { FfmpegStream } from "@zwa73/audio-utils";
 import { japanese_cleaners } from "../Bridge";
+import path from "pathe";
 
 
 export type SliceData ={
@@ -12,29 +12,10 @@ export type SliceData ={
     outDir:string;
     index:number;
 };
-/**根据数据切分音频 多线程 */
-export async function splitWavByDataMP (sliceDatas:SliceData[],sep = '_Segment_'){
-    //执行音频切分
-    return await Stream.from(sliceDatas,16)
-        .map(async (dat)=>{
-            return await splitWavByData(dat,sep);
-        }).toArray();
-}
-/**根据数据切分音频 */
-export async function splitWavByData(sliceData:SliceData,sep = '_Segment_'){
-    const {index,outDir,seg} = sliceData;
-    const inFilePath = sliceData.inFilePath;
-    const {start,end} = seg;
-    const wavname = getSplitWavName(sliceData,sep);
-    const outPath = path.join(outDir,wavname);
-    await SFfmpegTool.cutAudio(inFilePath,outPath, start/1000, (end-start)/1000);
-    return outPath;
-}
-export function getSplitWavName(sliceData:SliceData,sep = '_Segment_'){
-    const {index,seg} = sliceData;
-    const audioIndex = index+1;
-    const audioName = path.parse(sliceData.inFilePath).name;
-    return `${audioName}${sep}${audioIndex}.wav`;
+
+export function getSplitWavName(filePath:string,idx:number,sep = '_Segment_'){
+    const audioName = path.parse(filePath).name;
+    return `${audioName}${sep}${idx+1}.wav`;
 }
 
 export type MapCharCB<T> = (
@@ -97,7 +78,7 @@ export const formatSrtContent = (langMap:PRecord<LangFlagExt,string>)=>{
 
 /**获取音频时长/秒 */
 export const getAudioDuratin = async (filePath:string)=>{
-    const metadata = await SFfmpegTool.getAudioMetaData(filePath);
+    const metadata = await FfmpegStream.getAudioMetaData(filePath);
     const stream = metadata?.streams[0];
     if(stream==null) throw `音频文件 ${filePath} 无法获取流`;
     const dur = stream.duration;

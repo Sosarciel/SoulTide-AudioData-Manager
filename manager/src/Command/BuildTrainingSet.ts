@@ -4,8 +4,8 @@ import path from 'pathe';
 import { getCalibratedDir, getResProcessedDir, getTmpResampledDir, getTmpSplitDir, getTmpTrimSilenceDir, getTsetCharDir, getTsetDataDir, getTsetFilelistPath, getTsetInfoPath } from "../Define";
 import { TrainingSetInfo } from "../Schema.schema";
 import fs from 'fs';
-import { SliceData, parseSrtContent, getSplitWavName, splitWavByData, getAudioDuratin, fixedCharCfg, LangFlagExt } from "./Util";
-import { SFfmpegTool } from "@zwa73/audio-utils";
+import { parseSrtContent, getAudioDuratin, fixedCharCfg, LangFlagExt, getSplitWavName } from "./Util";
+import { FfmpegStream } from "@zwa73/audio-utils";
 
 
 const checkOrThrow = (str?:string)=>{
@@ -63,10 +63,17 @@ export const CmdBuildTrainingSet = (program: Command) => program
                         const inPath = path.join(processedDir, wavName);
                         if(!(await UtilFT.pathExists(inPath)))
                             throw `音频文件 ${inPath} 不存在`;
-    
-                        return segments.map((seg,index)=>
-                            ({inFilePath:inPath,seg,outDir: splitTmpDit,index})
-                        );
+
+                        return segments.map((seg,index)=>{
+                            const audioName = getSplitWavName(inPath,index,SplitSep);
+
+                            return {
+                                inFilePath : inPath,
+                                outFilePath: path.join(splitTmpDit,audioName),
+                                stream:FfmpegStream.create(),
+                                seg, audioName,
+                            }
+                        });
                     })),
                     //扁平化
                     stacklist => stacklist.flat(),
@@ -74,15 +81,16 @@ export const CmdBuildTrainingSet = (program: Command) => program
                     slicedatas => Stream.from(slicedatas,16)
                         //创建srt表并裁剪音频
                         .map(async data=>{
-                            const langmap = parseSrtContent(data.seg.text);
+                            const {seg,stream,audioName,outFilePath,inFilePath} = data;
+                            const {start,end,text} = seg;
+
+                            //格式化filelist
+                            const langmap = parseSrtContent(text);
                             if(langmap.tag!=null){
                                 if(langmap.tag.includes('invalid'))
                                     return undefined;
                             }
-                            const outpath = path.join(data.outDir,getSplitWavName(data,SplitSep));
-                            const wavName = getSplitWavName(data,SplitSep);
-                            const filepath = path.join('data',char,wavName)
-
+                            const filepath = path.join('data',char,audioName);
                             let formatLine = format
                                 .replace(/{filepath}/g,filepath)
                                 .replace(/{char_index}/g,`${charCfg.charIdx}`);
@@ -93,45 +101,39 @@ export const CmdBuildTrainingSet = (program: Command) => program
                                     formatLine = formatLine.replace(reg,checkOrThrow(langmap[flag as LangFlagExt]));
                             });
 
-                            if(!opt.force && await UtilFT.pathExists(outpath))
-                                return { inpath:outpath, formatLine};
-                            await splitWavByData(data,SplitSep);
-                            return { inpath:outpath, formatLine};
-                        })
-                        //修剪静音
-                        .map(async data=>{
-                            if(data==null) return undefined;
-                            const {inpath,formatLine} = data;
-                            const outpath = path.join(trimTmpDir,path.parse(inpath).base);
-                            if(!opt.force && await UtilFT.pathExists(outpath))
-                                return {outpath,formatLine};
-                            await SFfmpegTool.trimSilence(inpath,outpath,-50,0.05);
-                            return {outpath,formatLine};
-                        })
-                        //重采样
-                        .map(async data=>{
-                            if(data==null) return undefined;
-                            const outpath = path.join(tmpResampledDir,path.parse(data.outpath).base);
+                            //检查缓存
+                            if(await UtilFT.pathExists(outFilePath) && !opt.force)
+                                return { outFilePath, audioName, formatLine};
 
-                            if(await SFfmpegTool.isMono(data.outpath))
-                                await SFfmpegTool.resample(data.outpath,outpath,sr);
-                            else await SFfmpegTool.resample(data.outpath,outpath,sr,1);
+                            //剪切
+                            stream.cut(start/1000, (end-start)/1000);
+                            //修剪静音
+                            stream.trimSilence({silence:0.05,threshold:-50});
+                            //重采样
+                            if(await FfmpegStream.isMono(data.inFilePath))
+                                stream.resample({rate:sr});
+                            else stream.resample({rate:sr,ac:1});
 
-                            return {outpath,formatLine:data.formatLine};
+                            //应用
+                            await stream.append(inFilePath,outFilePath);
+                            return { outFilePath, audioName, formatLine};
                         })
                         //验证时长并移动文件  非全量并发移动可能造成随机输出
-                        .concurrent(1).map(async data=>{
+                        .concurrent(1)
+                        .map(async data=>{
                             if( data == null ||
                                 totalTime > charCfg.trainingset_duration
                             ) return undefined;
-                            const {outpath,formatLine} = data;
-                            const time = await getAudioDuratin(outpath);
+                            const {outFilePath,formatLine,audioName} = data;
+                            const time = await getAudioDuratin(outFilePath);
                             if( time < charCfg.min_duration ||
                                 time > charCfg.max_duration
                             ) return undefined;
                             totalTime+=time;
-                            const cppath = path.join(tsetCharDir,path.parse(outpath).base);
-                            await fs.promises.cp(outpath,cppath);
+
+                            //复制到训练集
+                            const cppath = path.join(tsetCharDir,audioName);
+                            await fs.promises.cp(outFilePath,cppath);
                             return formatLine;
                         }).exclude(undefined).toArray(),
                     //转为 entries

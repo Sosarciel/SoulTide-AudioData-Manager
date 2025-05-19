@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import path from 'path';
 import { memoize, Stream, UtilFT } from "@zwa73/utils"; // 假设你的工具库中提供 FLAC 转换功能
-import { SFfmpegTool } from "@zwa73/audio-utils";
+import { FfmpegStream } from "@zwa73/audio-utils";
 
 export const CmdConvertWavToFlac = (program: Command) => program
     .command("Convert-Wav-To-Flac")
@@ -40,7 +40,7 @@ export const CmdConvertWavToFlac = (program: Command) => program
                     console.log(`正在转换: ${file} -> ${outputPath}`);
 
                     // 调用 wav2flac 方法进行转换
-                    await SFfmpegTool.wav2flac(file, outputPath);
+                    await FfmpegStream.create().flac().append(file, outputPath);
 
                     console.log(`完成转换: ${outputPath}`);
                 } catch (err) {

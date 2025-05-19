@@ -1,8 +1,9 @@
-import { UtilFunc } from "@zwa73/utils";
+import { Stream, UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
-import { SliceData, splitWavByDataMP } from "./Util";
+import { getSplitWavName, SliceData } from "./Util";
 import fs from 'fs';
+import { FfmpegStream } from "@zwa73/audio-utils";
 
 
 
@@ -19,17 +20,16 @@ export const CmdSplitAudio = (program: Command) => program
     .argument('<srtPath>', '输入的srt路径')
     .action(async (wavPath:string,srtPath:string) => {
 
-        const sliceDatas:SliceData[]= [];
-
         const text = await fs.promises.readFile(srtPath,'utf-8');
         const srtseg = UtilFunc.parseSrt(text);
-        const baseAudioPath = wavPath;
+
 
         const outDir = path.parse(wavPath).dir;
-        sliceDatas.push(...srtseg.map((seg,index)=>({
-            seg,index,inFilePath:baseAudioPath,outDir
-        })));
-
-        //执行音频切分
-        await splitWavByDataMP(sliceDatas);
+        await Stream.from(srtseg.map((seg,index)=>{
+            const {start,end} = seg;
+            const outPath = path.join(outDir,getSplitWavName(srtPath,index))
+            return ()=>FfmpegStream.create().cut(start,end).append(wavPath,outPath);
+        }))
+        .map(async fn=>fn())
+        .append();
     })

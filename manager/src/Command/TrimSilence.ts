@@ -1,8 +1,8 @@
 import { Command } from 'commander';
-import { UtilFT } from '@zwa73/utils';
+import { Stream, UtilFT } from '@zwa73/utils';
 import { DATA_PATH } from '../Define';
 import { mapChars, parseStrlist } from './Util';
-import { SFfmpegTool } from '@zwa73/audio-utils';
+import { FfmpegStream } from '@zwa73/audio-utils';
 
 export const CmdTrimSilence = (program: Command) => program
     .command('Trim-Silence')
@@ -23,5 +23,10 @@ export const CmdTrimSilence = (program: Command) => program
             }
         });
 
-        await SFfmpegTool.trimSilenceMP(iomap);
+        const stream = FfmpegStream.create().trimSilence();
+
+        await Stream.from(Object.entries(iomap),8)
+            .map(async ([input,output])=>{
+                await stream.append(input,output);
+            }).append();
     });

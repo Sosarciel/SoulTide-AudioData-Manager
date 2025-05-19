@@ -4,7 +4,7 @@ import path from 'pathe';
 import { getTsetCharDir, getTsetInfoPath } from "../Define";
 import { fixedCharCfg, getAudioDuratin } from "./Util";
 import { TrainingSetInfo } from "../Schema.schema";
-import { SFfmpegTool } from "@zwa73/audio-utils";
+import { FfmpegStream } from "@zwa73/audio-utils";
 
 
 
@@ -33,7 +33,7 @@ export const CmdCheckTrainingSet = (program: Command) => program
                 if(ext !== '.wav') throw console.log(`音频文件 ${tsetPath} 不是wav格式`);
                 funcs.push(async ()=>{
                     //console.log(`正在检查 ${processedPath}`);
-                    if(!(await SFfmpegTool.isMono(tsetPath)))
+                    if(!(await FfmpegStream.isMono(tsetPath)))
                         console.log(`音频文件 ${tsetPath} 不是单声道`);
                     const duration = await getAudioDuratin(tsetPath);
                     if (!durations[character]) durations[character] = 0;
