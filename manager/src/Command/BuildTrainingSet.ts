@@ -52,6 +52,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                 const calibratedSrtList = await UtilFT.fileSearchGlob(calibratedDir, '*.srt');
                 const charCfg = fixedCfg[char];
 
+                const plist:Promise<void>[] = [];
                 let totalTime = 0;
                 return pipe(
                     //根据srt构造slice数据
@@ -78,7 +79,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                     //扁平化
                     stacklist => stacklist.flat(),
                     //删除静音 验证时长 删除不匹配项
-                    slicedatas => Stream.from(slicedatas,16)
+                    slicedatas => Stream.from(slicedatas,8)
                         //创建srt表并裁剪音频
                         .map(async data=>{
                             const {seg,stream,audioName,outFilePath,inFilePath} = data;
@@ -133,11 +134,14 @@ export const CmdBuildTrainingSet = (program: Command) => program
 
                             //复制到训练集
                             const cppath = path.join(tsetCharDir,audioName);
-                            await fs.promises.cp(outFilePath,cppath);
+                            plist.push(fs.promises.cp(outFilePath,cppath));
                             return formatLine;
                         }).exclude(undefined).toArray(),
                     //转为 entries
-                    value => ({ key:char, value }),
+                    async value => {
+                        await Promise.all(plist);
+                        return { key:char, value };
+                    },
                 )
             })),
             //将 entries 转为 char-filelist 表
