@@ -1,0 +1,9 @@
+{
+    "sample_rate": 22050,
+    "characters": [
+        {"char": "Dora","trainingset_duration": 100},
+        {"char": "Haliva","trainingset_duration": 100},
+        {"char": "Kokkoro","trainingset_duration": 300}
+    ],
+    "filelist_format": "{filepath}|{char_index}|{raw}"
+}
