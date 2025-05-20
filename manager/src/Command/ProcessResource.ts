@@ -67,7 +67,7 @@ export const CmdProcessResource = (program: Command) => program
                             const {start,end} = seg;
                             nstream.trim({start:start/1000,end:end/1000});
                             //console.log(2);
-                            return ()=>nstream.append(audioPath,path.join(processedDir,outName));
+                            return ()=>nstream.apply(audioPath,path.join(processedDir,outName));
                         });
                     }
 
@@ -75,11 +75,11 @@ export const CmdProcessResource = (program: Command) => program
                     return [async ()=>{
                         const outpath = path.join(processedDir,`${path.parse(audioPath).name}.wav`);
                         stream!=undefined
-                            ? await stream.append(audioPath,outpath)
+                            ? await stream.apply(audioPath,outpath)
                             : await fs.promises.cp(audioPath,outpath)
                     }];
                 }))).flat();
 
-            await Stream.from(fnlist,8).map(fn=>fn()).append();
+            await Stream.from(fnlist,8).map(fn=>fn()).apply();
         });
     })

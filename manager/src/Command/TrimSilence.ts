@@ -27,6 +27,6 @@ export const CmdTrimSilence = (program: Command) => program
 
         await Stream.from(Object.entries(iomap),8)
             .map(async ([input,output])=>{
-                await stream.append(input,output);
-            }).append();
+                await stream.apply(input,output);
+            }).apply();
     });

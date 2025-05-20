@@ -40,13 +40,13 @@ export const CmdConvertWavToFlac = (program: Command) => program
                     console.log(`正在转换: ${file} -> ${outputPath}`);
 
                     // 调用 wav2flac 方法进行转换
-                    await FfmpegStream.create().flac().append(file, outputPath);
+                    await FfmpegStream.create().flac().apply(file, outputPath);
 
                     console.log(`完成转换: ${outputPath}`);
                 } catch (err) {
                     console.error(`转换失败: ${file}`, err);
                 }
-            }).append();
+            }).apply();
 
         console.log('所有文件转换完成！');
     });

@@ -5,10 +5,10 @@
     "start-pyserver": "start_python_server.bat"
   },
   "dependencies": {
-    "@zwa73/audio-utils": "^1.0.15",
-    "@zwa73/js-utils": "^1.0.23",
+    "@zwa73/audio-utils": "^1.0.18",
+    "@zwa73/js-utils": "^1.0.24",
     "@zwa73/modular-mixer": "^1.0.4",
-    "@zwa73/utils": "^1.0.220",
+    "@zwa73/utils": "^1.0.221",
     "commander": "^11.1.0"
   },
   "devDependencies": {

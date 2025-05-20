@@ -116,7 +116,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             else stream.resample({rate:sr,ac:1});
 
                             //应用
-                            await stream.append(inFilePath,outFilePath);
+                            await stream.apply(inFilePath,outFilePath);
                             return { outFilePath, audioName, formatLine};
                         })
                         //验证时长并移动文件  非全量并发移动可能造成随机输出
