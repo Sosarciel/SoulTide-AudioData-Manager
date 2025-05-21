@@ -35,7 +35,7 @@ export const CmdCheckResource = (program: Command) => program
                 })
             }));
         });
-        await Stream.from(funcs,16).map(ivk).append();
+        await Stream.from(funcs,16).map(ivk).apply();
 
         // 打印每个角色的总时长
         Object.keys(durations).forEach(character => {
