@@ -12,7 +12,7 @@ import { CmdCalculateVITSLoss } from "./CalculateCompositeLoss";
 import { CmdConvertWavToFlac } from "./ConvertWavToFlac";
 import { CmdBuildConfig } from "./BuildConfig";
 import { CmdBuildMetadata } from "./BuildMetadata";
-import { CmdConvertLang } from "./ProcessLang";
+import { CmdConvertLang } from "./ConvertLang";
 import { CmdTrimSilence } from "./TrimSilence";
 import { CmdExtractSrt } from "./ExtractSrt";
 
