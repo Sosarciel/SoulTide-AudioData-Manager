@@ -3,7 +3,7 @@ import fs from 'fs';
 import { mapChars, parseSrtContent, parseStrlist } from "./Util";
 import { getCalibratedDir, getResProcessedDir } from "../Define";
 import path from "pathe";
-import { UtilFunc } from "@zwa73/utils";
+import { Stream, UtilFunc } from "@zwa73/utils";
 
 
 
@@ -23,7 +23,7 @@ export const CmdExtractSrt = (program: Command) => program
             const caliDir = getCalibratedDir(char);
             const wavDir = getResProcessedDir(char);
             const clist = await fs.promises.readdir(caliDir);
-            await Promise.all(clist.map( async cfile =>{
+            Stream.from(clist,16).map( async cfile =>{
                 const cpath = path.join(caliDir,cfile);
                 const text = await fs.promises.readFile(cpath,'utf-8');
                 const srtseg = UtilFunc.parseSrt(text);
@@ -33,6 +33,6 @@ export const CmdExtractSrt = (program: Command) => program
                 const wavFile = cfile.replace('.srt','.wav');
                 await fs.promises.cp(path.join(wavDir,wavFile), path.join(outPath,wavFile));
                 await fs.promises.cp(cpath, path.join(outPath,cfile));
-            }));
+            }).apply();
         });
     });
