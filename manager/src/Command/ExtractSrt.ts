@@ -28,7 +28,7 @@ export const CmdExtractSrt = (program: Command) => program
                 const text = await fs.promises.readFile(cpath,'utf-8');
                 const srtseg = UtilFunc.parseSrt(text);
                 if( ! srtseg.some( seg =>
-                    regex.test(seg.text) && ((seg.end-seg.start)>=duration)
+                    regex.test(seg.text) && (((seg.end-seg.start)/1000)>=duration)
                 )) return;
                 const wavFile = cfile.replace('.srt','.wav');
                 await fs.promises.cp(path.join(wavDir,wavFile), path.join(outPath,wavFile));
