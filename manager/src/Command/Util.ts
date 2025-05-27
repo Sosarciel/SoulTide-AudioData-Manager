@@ -94,7 +94,11 @@ const defCfg:Required<TrainingSetCharCfg> = {
     char: '',
     max_duration: Infinity,
     min_duration: 1,
-    trainingset_duration: Infinity
+    trainingset_duration: Infinity,
+    required_tag: [],
+    excluded_tag: [],
+    include_file: ['.*'],
+    exclude_file: []
 }
 export const fixedCharCfg = (info:TrainingSetInfo)=>{
     return info.characters

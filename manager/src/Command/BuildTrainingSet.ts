@@ -50,7 +50,9 @@ export const CmdBuildTrainingSet = (program: Command) => program
                 const processedDir = getResProcessedDir(char);
                 const calibratedDir = getCalibratedDir(char);
                 const calibratedSrtList = await UtilFT.fileSearchGlob(calibratedDir, '*.srt');
-                const charCfg = fixedCfg[char];
+                const {charIdx,trainingset_duration,min_duration,max_duration,required_tag,excluded_tag,include_file,exclude_file} = fixedCfg[char];
+                const includeRegex = include_file.map(str => new RegExp(str));
+                const excludeRegex = exclude_file.map(str => new RegExp(str));
 
                 const plist:Promise<void>[] = [];
                 let totalTime = 0;
@@ -67,6 +69,14 @@ export const CmdBuildTrainingSet = (program: Command) => program
 
                         return segments.map((seg,index)=>{
                             const audioName = getSplitWavName(inPath,index,SplitSep);
+                            if(!includeRegex.some(reg => reg.test(basename)) || excludeRegex.some(reg => reg.test(basename)))
+                                return undefined;
+
+                            const tags = parseSrtContent(seg.text).tag??"";
+                            if(required_tag.every(tag => tags.includes(tag)))
+                                return undefined;
+                            if(excluded_tag?.some(tag => tags.includes(tag)))
+                                return undefined;
 
                             return {
                                 inFilePath : inPath,
@@ -82,6 +92,8 @@ export const CmdBuildTrainingSet = (program: Command) => program
                     slicedatas => Stream.from(slicedatas,8)
                         //创建srt表并裁剪音频
                         .map(async data=>{
+                            if(data=== undefined) return undefined;
+
                             const {seg,stream,audioName,outFilePath,inFilePath} = data;
                             const {start,end,text} = seg;
 
@@ -94,7 +106,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             const filepath = path.join('data',char,audioName);
                             let formatLine = format
                                 .replace(/{filepath}/g,filepath)
-                                .replace(/{char_index}/g,`${charCfg.charIdx}`);
+                                .replace(/{char_index}/g,`${charIdx}`);
 
                             LangFlagExt.map(flag => {
                                 const reg = new RegExp(`{${flag}}`,'g');
@@ -123,12 +135,12 @@ export const CmdBuildTrainingSet = (program: Command) => program
                         .concurrent(1)
                         .map(async data=>{
                             if( data == null ||
-                                totalTime > charCfg.trainingset_duration
+                                totalTime > trainingset_duration
                             ) return undefined;
                             const {outFilePath,formatLine,audioName} = data;
                             const time = await getAudioDuratin(outFilePath);
-                            if( time < charCfg.min_duration ||
-                                time > charCfg.max_duration
+                            if( time < min_duration ||
+                                time > max_duration
                             ) return undefined;
                             totalTime+=time;
 
