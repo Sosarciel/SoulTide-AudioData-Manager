@@ -57,7 +57,7 @@ const start = ()=> {
     return isStart;
 }
 
-const queue = new PromiseQueue({maxConcurrent:1});
+const queue = new PromiseQueue({concurrent:1});
 export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
