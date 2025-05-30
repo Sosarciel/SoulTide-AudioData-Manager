@@ -4,7 +4,7 @@ import path from 'pathe';
 import { DATA_PATH, getResDir } from "../Define";
 import { getAudioDuratin, mapChars, parseStrlist } from "./Util";
 import fs from 'fs';
-import { FfmpegStream } from "@zwa73/audio-utils";
+import { FfmpegTool } from "@zwa73/audio-utils";
 
 
 export const CmdCheckResource = (program: Command) => program
@@ -27,7 +27,7 @@ export const CmdCheckResource = (program: Command) => program
                     console.log(`音频文件 ${processedPath} 不是wav格式`);
                 funcs.push(async ()=>{
                     //console.log(`正在检查 ${processedPath}`);
-                    if(!(await FfmpegStream.isMono(processedPath)))
+                    if(!(await FfmpegTool.isMono(processedPath)))
                         console.log(`音频文件 ${processedPath} 不是单声道`);
                     const duration = await getAudioDuratin(processedPath);
                     if (!durations[character]) durations[character] = 0;

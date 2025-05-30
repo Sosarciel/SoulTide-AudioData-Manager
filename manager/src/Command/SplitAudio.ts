@@ -3,7 +3,7 @@ import path from 'pathe';
 import { Command } from 'commander';
 import { getSplitWavName, SliceData } from "./Util";
 import fs from 'fs';
-import { FfmpegStream } from "@zwa73/audio-utils";
+import { FfmpegFlow } from "@zwa73/audio-utils";
 
 
 
@@ -28,7 +28,7 @@ export const CmdSplitAudio = (program: Command) => program
         await Stream.from(srtseg.map((seg,index)=>{
             const {start,end} = seg;
             const outPath = path.join(outDir,getSplitWavName(srtPath,index))
-            return ()=>FfmpegStream.create().trim({start:start/1000,end:end/1000}).apply(wavPath,outPath);
+            return ()=>FfmpegFlow.trim({start:start/1000,end:end/1000}).apply(wavPath,outPath);
         }))
         .map(async fn=>fn())
         .apply();

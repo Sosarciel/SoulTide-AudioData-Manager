@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { Stream, UtilFT } from '@zwa73/utils';
 import { DATA_PATH } from '../Define';
 import { mapChars, parseStrlist } from './Util';
-import { FfmpegStream } from '@zwa73/audio-utils';
+import { FfmpegFlow } from '@zwa73/audio-utils';
 
 export const CmdTrimSilence = (program: Command) => program
     .command('Trim-Silence')
@@ -23,10 +23,7 @@ export const CmdTrimSilence = (program: Command) => program
             }
         });
 
-        const stream = FfmpegStream.create().trimSilence();
-
-        await Stream.from(Object.entries(iomap),8)
-            .map(async ([input,output])=>{
-                await stream.apply(input,output);
-            }).apply();
+        await FfmpegFlow
+            .trimSilence()
+            .parallel(iomap);
     });

@@ -1,7 +1,7 @@
 import { eachChars } from "./Command/Util";
 import fs from 'fs';
 import { DATA_PATH, getResProcessedDir } from "./Define";
-import { FfmpegStream } from "@zwa73/audio-utils";
+import { FfmpegTool } from "@zwa73/audio-utils";
 import { Stream, UtilFT } from "@zwa73/utils";
 
 
@@ -13,7 +13,7 @@ import { Stream, UtilFT } from "@zwa73/utils";
         const wavs = await UtilFT.fileSearchGlob(psdDir,"*.wav");
         Stream.from(wavs,16)
             .map(async wavpath=>{
-                if(!await FfmpegStream.isMono(wavpath))
+                if(!await FfmpegTool.isMono(wavpath))
                     console.log(`${wavpath} 不是单声道`);
             });
     });

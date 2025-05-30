@@ -5,7 +5,7 @@ import { getCalibratedDir, getResProcessedDir, getTmpResampledDir, getTmpSplitDi
 import { TrainingSetInfo } from "../Schema.schema";
 import fs from 'fs';
 import { parseSrtContent, getAudioDuratin, fixedCharCfg, LangFlagExt, getSplitWavName } from "./Util";
-import { FfmpegStream } from "@zwa73/audio-utils";
+import { FfmpegFlow, FfmpegTool } from "@zwa73/audio-utils";
 
 
 const checkOrThrow = (str?:string)=>{
@@ -81,7 +81,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             return {
                                 inFilePath : inPath,
                                 outFilePath: path.join(splitTmpDit,audioName),
-                                stream:FfmpegStream.create(),
+                                stream:FfmpegFlow.create(),
                                 seg, audioName,
                             }
                         });
@@ -123,7 +123,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             //修剪静音
                             stream.trimSilence({silence:0.05,threshold:-50});
                             //重采样
-                            if(await FfmpegStream.isMono(data.inFilePath))
+                            if(await FfmpegTool.isMono(data.inFilePath))
                                 stream.resample({rate:sr});
                             else stream.resample({rate:sr,ac:1});
 

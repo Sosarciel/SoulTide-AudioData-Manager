@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import { eachChars, getSplitWavName, parseStrlist } from "./Util";
 import { DATA_PATH, getResAudioDir, getResProcessedDir, getResSrtDir } from "../Define";
 import fs from 'fs';
-import { FfmpegStream } from "@zwa73/audio-utils";
+import { FfmpegFlow } from "@zwa73/audio-utils";
 
 
 
@@ -45,7 +45,7 @@ export const CmdProcessResource = (program: Command) => program
                         }),
                         '.flac':async ()=> ({
                             audioPath,
-                            stream:FfmpegStream.create().wav().clearMetadata(),
+                            stream:FfmpegFlow.wav().clearMetadata(),
                         }),
                     });
                 })
@@ -60,7 +60,7 @@ export const CmdProcessResource = (program: Command) => program
                         const srtseg = UtilFunc.parseSrt(text);
 
                         return srtseg.map((seg,index)=>{
-                            const nstream = stream==undefined ? FfmpegStream.create() : stream.clone();
+                            const nstream = stream==undefined ? FfmpegFlow.create() : stream.clone();
 
                             const outName = getSplitWavName(audioPath,index);
                             //console.log(audioPath,path.join(processedDir,outName))

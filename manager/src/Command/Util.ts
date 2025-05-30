@@ -1,7 +1,7 @@
 import { match, PRecord, SrtSegment, Stream, UtilFT } from "@zwa73/utils";
 import { getCharDir } from "../Define";
 import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
-import { FfmpegStream } from "@zwa73/audio-utils";
+import { FfmpegTool } from "@zwa73/audio-utils";
 import { japanese_cleaners } from "../Bridge";
 import path from "pathe";
 
@@ -78,7 +78,7 @@ export const formatSrtContent = (langMap:PRecord<LangFlagExt,string>)=>{
 
 /**获取音频时长/秒 */
 export const getAudioDuratin = async (filePath:string)=>{
-    const metadata = await FfmpegStream.getAudioMetaData(filePath);
+    const metadata = await FfmpegTool.getAudioMetaData(filePath);
     const stream = metadata?.streams[0];
     if(stream==null) throw `音频文件 ${filePath} 无法获取流`;
     const dur = stream.duration;
