@@ -8,7 +8,7 @@
     "@zwa73/audio-utils": "^1.0.22",
     "@zwa73/js-utils": "^1.0.27",
     "@zwa73/modular-mixer": "^1.0.4",
-    "@zwa73/utils": "^1.0.222",
+    "@zwa73/utils": "^1.0.223",
     "commander": "^11.1.0"
   },
   "devDependencies": {
