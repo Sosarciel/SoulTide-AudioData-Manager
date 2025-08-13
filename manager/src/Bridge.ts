@@ -61,7 +61,7 @@ const queue = new PromiseQueue({concurrent:1});
 export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
-        await queue.enqueue(async () => sleep(1));
+        await sleep(1);
         const response = await postTool.once({json:{ text: inputText }});
         const data = response?.data as { result: string };
         //console.log(data)
