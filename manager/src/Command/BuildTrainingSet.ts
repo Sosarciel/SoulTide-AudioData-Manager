@@ -125,7 +125,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             //重采样
                             if(await FfmpegTool.isMono(data.inFilePath))
                                 stream.resample({rate:sr});
-                            else stream.resample({rate:sr,ac:1});
+                            else stream.resample({rate:sr,ac:1});//转为单声道
 
                             //应用
                             await stream.apply(inFilePath,outFilePath);
