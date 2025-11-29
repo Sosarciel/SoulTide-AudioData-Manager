@@ -29,6 +29,7 @@
 
 ## step 6
 `ts-node .\src\Route.ts Extract-Srt <character> "他" "../tmp/fxdot"` 提取包含中文`他`的srt与wav进行二次筛查读音  
+部分 他 ta↓ 应转为 ほか ho↑ka  
 完成筛查后将srt移至`dataset/character/[char]/calibrated/*`  
 
 ## step7
