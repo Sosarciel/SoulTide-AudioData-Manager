@@ -1,9 +1,12 @@
 import { Command } from 'commander';
 import fs from 'fs';
-import { pipe, throwError, UtilFT } from '@zwa73/utils';
+import { pipe, PromiseQueue, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
 import path from 'pathe';
-import { DATA_PATH, getResAudioDir, getResDir } from '../Define';
+import { DATA_PATH, getCalibratedDir, getResAudioDir, getResDir } from '../Define';
+import { CSV, parseSrtContent } from './Util';
 
+
+const queue = new PromiseQueue({concurrent:64});
 export const CmdBuildMetadata = (program: Command) => program
     .command("Build-Metadata")
     .alias("buildmetadata")
@@ -15,6 +18,7 @@ export const CmdBuildMetadata = (program: Command) => program
             if(['template','tmp'].includes(char)) return;
             const audioDir = getResAudioDir(char);
             const resDir = getResDir(char);
+            const cailDir = getCalibratedDir(char);
 
             if(! await UtilFT.pathExists(audioDir)) return;
 
@@ -25,11 +29,24 @@ export const CmdBuildMetadata = (program: Command) => program
                     if(!/.+\.flac$/.test(fp))
                         console.log(`错误的文件名: ${fp}`);
                     const rfp = path.relative(resDir,fp);
-                    return {filepath:rfp, text:path.parse(rfp).name};
+                    const fname = path.parse(fp).name;
+                    const srtPath = path.join(cailDir,`${fname}.srt`);
+
+                    let srtSegs:SrtSegment[]|undefined = undefined;
+                    if(await UtilFT.pathExists(srtPath)){
+                        const srtText = await queue.enqueue(()=>fs.promises.readFile(srtPath, 'utf8'));
+                        srtSegs = UtilFunc.parseSrt(srtText);
+                    }
+                    const jatext = srtSegs?.map(v=>parseSrtContent(v.text).raw).join('\n');
+                    return {
+                        filepath:rfp,
+                        id:path.parse(rfp).name,
+                        text:jatext??'None',
+                    };
                 })),
-                async datas => datas.sort((a, b) => a.filepath.localeCompare(b.filepath)).reduce((acc,cur)=>
-                    `${acc}\n${JSON.stringify(cur.filepath)},${JSON.stringify(cur.text)}`
-                ,'file_name,text'),
+                async datas => datas.sort((a, b) => a.filepath.localeCompare(b.filepath)),
+                    //.reduce((acc,cur)=>`${acc}\n${JSON.stringify(cur.filepath)},${JSON.stringify(cur.id)}`,'file_name,text'),
+                async datas=> CSV.stringify(datas),
                 async text => fs.promises.writeFile(path.join(resDir,'metadata.csv'),text),
             );
         });

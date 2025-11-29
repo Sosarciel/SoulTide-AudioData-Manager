@@ -10,6 +10,7 @@
     "@zwa73/modular-mixer": "^1.0.4",
     "@zwa73/utils": "^1.0.242",
     "commander": "^11.1.0",
+    "csv-stringify": "^6.6.0",
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {

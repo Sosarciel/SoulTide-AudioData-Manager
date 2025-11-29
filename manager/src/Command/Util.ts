@@ -1,10 +1,25 @@
-import { match, PRecord, SrtSegment, Stream, UtilFT } from "@zwa73/utils";
+import { match, PRecord, SrtSegment, UtilFT } from "@zwa73/utils";
 import { getCharDir } from "../Define";
 import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
 import { FfmpegTool } from "@zwa73/audio-utils";
 import { japanese_cleaners } from "../Bridge";
 import path from "pathe";
+import csvstringify from 'csv-stringify';
 
+export const CSV = {
+    stringify:(json:Record<string,number|string>[])=>new Promise<string>((resolve,reject)=>{
+        csvstringify.stringify(json, (err, output) => {
+            if (err) reject(err);
+            resolve(output);
+        });
+    }),
+    //parse:(str:string)=>new Promise<string[][]>((resolve,reject)=>{
+    //    csvparse.parse(str, (err, output) => {
+    //        if (err) reject(err);
+    //        resolve(output);
+    //    });
+    //}),
+}
 
 export type SliceData ={
     inFilePath:string;
