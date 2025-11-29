@@ -43,4 +43,4 @@
 `ts-node src/Route Process-SrtLang <characters> --flag ja-phoneme --remove`删除音素  
 `ts-node src/Route Process-SrtLang <characters> --flag ja-phoneme`重新转换音素  
 检视音素状态, 确保在校准阶段时手动添加的srt分段正确
-以`rec <character>`标题暂存  
+以`regjap <character>`标题暂存  
