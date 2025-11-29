@@ -8,7 +8,10 @@ import csvstringify from 'csv-stringify';
 
 export const CSV = {
     stringify:(json:Record<string,number|string>[])=>new Promise<string>((resolve,reject)=>{
-        csvstringify.stringify(json, (err, output) => {
+        csvstringify.stringify(json, {
+          header: true,              // 输出表头
+          columns: Object.keys(json[0]) // 用第一行的 key 作为列名
+        },(err, output) => {
             if (err) reject(err);
             resolve(output);
         });
