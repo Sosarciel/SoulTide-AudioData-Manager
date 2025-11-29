@@ -57,13 +57,13 @@ const start = ()=> {
     return isStart;
 }
 
-const queue = new PromiseQueue({concurrent:1});
+const queue = new PromiseQueue({concurrent:8});
 export async function japanese_cleaners(inputText:string) {
     //await start();
     try{
         //打破微任务队列防止阻塞
-        await sleep(0);
-        const response = await postTool.once({json:{ text: inputText }});
+        await sleep(1);
+        const response = await queue.enqueue(()=>postTool.once({json:{ text: inputText }}));
         const data = response?.data as { result: string };
         //console.log(data)
         //const response = await axios.post('http://127.0.0.1:4242/japanese_cleaners', { text: inputText })
