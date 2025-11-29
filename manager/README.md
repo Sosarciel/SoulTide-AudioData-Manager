@@ -25,7 +25,8 @@
 依照`dataset/note.txt` 阈值-60 取整0.001 精度1024 缩放1.5 行高140 进行配置  
 将`dataset/character/[char]/resource/processed/*`拖入应用窗口  
 将`dataset/character/[char]/calibrated/*`拖入应用窗口  
-人工校准 并以`c <character>`标题暂存  
+人工校准 任何需注意问题写入`dataset/character/[char]/note.txt` 或 `dataset/note.txt`  
+并以`c <character>`标题暂存  
 
 ## step 6
 `ts-node .\src\Route.ts Extract-Srt <character> "他" "../tmp/fxdot"` 提取包含中文`他`的srt与wav进行二次筛查读音  
