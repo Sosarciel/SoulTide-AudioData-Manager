@@ -39,12 +39,12 @@ export const CmdBuildMetadata = (program: Command) => program
                     }
                     const jatext = srtSegs?.map(v=>parseSrtContent(v.text).raw).join('\n');
                     return {
-                        filepath:rfp,
+                        file_name:rfp,
                         id:path.parse(rfp).name,
                         text:jatext??'None',
                     };
                 })),
-                async datas => datas.sort((a, b) => a.filepath.localeCompare(b.filepath)),
+                async datas => datas.sort((a, b) => a.file_name.localeCompare(b.file_name)),
                     //.reduce((acc,cur)=>`${acc}\n${JSON.stringify(cur.filepath)},${JSON.stringify(cur.id)}`,'file_name,text'),
                 async datas=> CSV.stringify(datas),
                 async text => fs.promises.writeFile(path.join(resDir,'metadata.csv'),text),
