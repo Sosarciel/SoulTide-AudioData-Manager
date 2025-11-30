@@ -3,7 +3,7 @@ import fs from 'fs';
 import { pipe, PromiseQueue, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
 import path from 'pathe';
 import { DATA_PATH, getCalibratedDir, getResAudioDir, getResDir } from '../Define';
-import { CSV, parseSrtContent } from './Util';
+import { CSV, parseSrtText } from './Util';
 
 
 const queue = new PromiseQueue({concurrent:64});
@@ -37,7 +37,7 @@ export const CmdBuildMetadata = (program: Command) => program
                         const srtText = await queue.enqueue(()=>fs.promises.readFile(srtPath, 'utf8'));
                         srtSegs = UtilFunc.parseSrt(srtText);
                     }
-                    const jatext = srtSegs?.map(v=>parseSrtContent(v.text).raw).join('\n');
+                    const jatext = srtSegs?.map(v=>parseSrtText(v.text).raw).join('\n');
                     return {
                         file_name:rfp,
                         id:path.parse(rfp).name,

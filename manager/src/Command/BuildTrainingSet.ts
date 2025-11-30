@@ -4,7 +4,7 @@ import path from 'pathe';
 import { getCalibratedDir, getResProcessedDir, getTmpResampledDir, getTmpSplitDir, getTmpTrimSilenceDir, getTsetCharDir, getTsetDataDir, getTsetFilelistPath, getTsetInfoPath } from "../Define";
 import { TrainingSetInfo } from "../Schema.schema";
 import fs from 'fs';
-import { parseSrtContent, getAudioDuratin, fixedCharCfg, LangFlagExt, getSplitWavName } from "./Util";
+import { parseSrtText, getAudioDuratin, fixedCharCfg, LangFlagExt, getSplitWavName } from "./Util";
 import { FfmpegFlow, FfmpegTool } from "@zwa73/audio-utils";
 
 
@@ -72,7 +72,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             if(!includeRegex.some(reg => reg.test(basename)) || excludeRegex.some(reg => reg.test(basename)))
                                 return undefined;
 
-                            const tags = parseSrtContent(seg.text).tag??"";
+                            const tags = parseSrtText(seg.text).tag??"";
                             if(required_tag.every(tag => tags.includes(tag)))
                                 return undefined;
                             if(excluded_tag?.some(tag => tags.includes(tag)))
@@ -98,7 +98,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             const {start,end,text} = seg;
 
                             //格式化filelist
-                            const langmap = parseSrtContent(text);
+                            const langmap = parseSrtText(text);
                             if(langmap.tag!=null){
                                 if(langmap.tag.includes('invalid'))
                                     return undefined;

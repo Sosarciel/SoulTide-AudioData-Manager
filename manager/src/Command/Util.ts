@@ -70,7 +70,7 @@ export const LangFlagExt = [...LangFlag,'raw','tag'] as const;
 export type LangFlagExt = typeof LangFlagExt[number];
 
 /**解析srt标签内容 无标记则会被解析为raw */
-export const parseSrtContent = (text:string)=>{
+export const parseSrtText = (text:string)=>{
     const langMap:Record<string,string> = {};
 
     let flag = 'raw';

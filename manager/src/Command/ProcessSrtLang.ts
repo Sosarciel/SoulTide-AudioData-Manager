@@ -1,12 +1,12 @@
 import { Command } from 'commander';
 import { match, SrtSegment, UtilFT, UtilFunc } from '@zwa73/utils';
 import { getCalibratedDir } from '../Define';
-import { convertLang, formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtContent, parseStrlist } from './Util';
+import { convertLang, formatSrtContent, LangFlag, LangFlagExt, mapChars, parseSrtText, parseStrlist } from './Util';
 import fs from 'fs';
 
 
 const checkAndParse = (seg:SrtSegment)=>{
-    const langmap = parseSrtContent(seg.text);
+    const langmap = parseSrtText(seg.text);
     if(langmap.raw==null)
         throw `srtseg ${seg} 缺失基础文本`;
     return langmap;

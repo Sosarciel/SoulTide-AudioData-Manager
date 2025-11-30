@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import fs from 'fs';
-import { mapChars, parseSrtContent, parseStrlist } from "./Util";
+import { mapChars, parseStrlist } from "./Util";
 import { getCalibratedDir, getResProcessedDir } from "../Define";
 import path from "pathe";
 import { Stream, UtilFunc } from "@zwa73/utils";
