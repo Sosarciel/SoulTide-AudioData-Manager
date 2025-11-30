@@ -75,13 +75,13 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             if(!includeRegex.some(reg => reg.test(basename)) || excludeRegex.some(reg => reg.test(basename)))
                                 return undefined;
 
-                            const tags = parseSrtText(seg.text).tag??"";
-                            if(required_tag.every(tag => tags.includes(tag)))
-                                return undefined;
-                            if(excluded_tag?.some(tag => tags.includes(tag)))
-                                return undefined;
                             const langmap = parseSrtText(seg.text);
-                            if(langmap.tag?.includes('invalid'))
+                            const tags = langmap.tag??"";
+                            if(required_tag.some(tag => !tags.includes(tag)))
+                                return undefined;
+                            if(excluded_tag.some(tag => tags.includes(tag)))
+                                return undefined;
+                            if(tags.includes('invalid'))
                                 return undefined;
 
                             return {
