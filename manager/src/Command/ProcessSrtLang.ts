@@ -72,7 +72,7 @@ export const CmdProcessSrtLang = (program: Command) => program
 
         console.log(`正在 ${opera} 语言标记 ${opt.flag}`);
 
-        await mapChars(characters,async character => {
+        await mapChars({characters,func:async character => {
             const calibratedDir = getCalibratedDir(character);
             const srtList = await UtilFT.fileSearchGlob(
                 calibratedDir, `*.srt`
@@ -90,5 +90,5 @@ export const CmdProcessSrtLang = (program: Command) => program
                 const newSrt = UtilFunc.createSrt(newsegs);
                 await fs.promises.writeFile(srtPath,newSrt.replace(/\r\n/g,'\n'), 'utf-8');
             }));
-        });
+        }});
     });

@@ -1,4 +1,4 @@
-import { pipe, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
+import { pipe, PromiseQueue, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
 import { Command } from "commander";
 import path from 'pathe';
 import { getCalibratedDir, getResProcessedDir, getTmpResampledDir, getTmpSplitDir, getTmpTrimSilenceDir, getTsetCharDir, getTsetDataDir, getTsetFilelistPath, getTsetInfoPath } from "../Define";
@@ -12,6 +12,9 @@ const checkOrThrow = (str?:string)=>{
     if(!str) throw '参数不能为空';
     return str;
 }
+
+const ffmpegQueue = new PromiseQueue({concurrent:16});
+const fsQueue = new PromiseQueue({concurrent:64});
 
 const SplitSep = '_';
 
@@ -57,9 +60,9 @@ export const CmdBuildTrainingSet = (program: Command) => program
                 const plist:Promise<void>[] = [];
                 let totalTime = 0;
                 return pipe(
-                    //根据srt构造slice数据
+                    //根据srt构造slice数据 并筛选匹配数据
                     Promise.all(calibratedSrtList.map(async srtPath => {
-                        const srt = await fs.promises.readFile(srtPath, 'utf-8');
+                        const srt = await fsQueue.enqueue(()=>fs.promises.readFile(srtPath, 'utf-8'));
                         const segments = UtilFunc.parseSrt(srt);
                         const basename = path.parse(srtPath).name;
                         const wavName = `${basename}.wav`;
@@ -77,32 +80,30 @@ export const CmdBuildTrainingSet = (program: Command) => program
                                 return undefined;
                             if(excluded_tag?.some(tag => tags.includes(tag)))
                                 return undefined;
+                            const langmap = parseSrtText(seg.text);
+                            if(langmap.tag?.includes('invalid'))
+                                return undefined;
 
                             return {
                                 inFilePath : inPath,
                                 outFilePath: path.join(splitTmpDit,audioName),
                                 stream:FfmpegFlow.create(),
-                                seg, audioName,
+                                seg, audioName, langmap
                             }
                         });
                     })),
                     //扁平化
                     stacklist => stacklist.flat(),
-                    //删除静音 验证时长 删除不匹配项
-                    slicedatas => Stream.from(slicedatas,8)
+                    //格式化filelist 剪切 删除静音 验证时长 删除不匹配项
+                    slicedatas => Stream.from(slicedatas)
                         //创建srt表并裁剪音频
                         .map(async data=>{
                             if(data=== undefined) return undefined;
 
-                            const {seg,stream,audioName,outFilePath,inFilePath} = data;
-                            const {start,end,text} = seg;
+                            const {seg,stream,audioName,outFilePath,inFilePath,langmap} = data;
+                            const {start,end} = seg;
 
-                            //格式化filelist
-                            const langmap = parseSrtText(text);
-                            if(langmap.tag!=null){
-                                if(langmap.tag.includes('invalid'))
-                                    return undefined;
-                            }
+                            //#region 格式化filelist
                             const filepath = path.join('data',char,audioName);
                             let formatLine = format
                                 .replace(/{filepath}/g,filepath)
@@ -111,8 +112,9 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             LangFlagExt.map(flag => {
                                 const reg = new RegExp(`{${flag}}`,'g');
                                 if(reg.test(formatLine))
-                                    formatLine = formatLine.replace(reg,checkOrThrow(langmap[flag as LangFlagExt]));
+                                    formatLine = formatLine.replace(reg,checkOrThrow(langmap[flag]));
                             });
+                            //#endregion
 
                             //检查缓存
                             if(await UtilFT.pathExists(outFilePath) && !opt.force)
@@ -128,7 +130,7 @@ export const CmdBuildTrainingSet = (program: Command) => program
                             else stream.resample({rate:sr,ac:1});//转为单声道
 
                             //应用
-                            await stream.apply(inFilePath,outFilePath);
+                            await ffmpegQueue.enqueue(()=>stream.apply(inFilePath,outFilePath));
                             return { outFilePath, audioName, formatLine};
                         })
                         //验证时长并移动文件  非全量并发移动可能造成随机输出

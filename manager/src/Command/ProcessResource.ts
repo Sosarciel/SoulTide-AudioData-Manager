@@ -1,7 +1,7 @@
 import { match, Stream, UtilFT, UtilFunc } from "@zwa73/utils";
 import path from 'pathe';
 import { Command } from 'commander';
-import { eachChars, getSplitWavName, parseStrlist } from "./Util";
+import { getSplitWavName, mapChars, parseStrlist } from "./Util";
 import { DATA_PATH, getResAudioDir, getResProcessedDir, getResSrtDir } from "../Define";
 import fs from 'fs';
 import { FfmpegFlow } from "@zwa73/audio-utils";
@@ -21,7 +21,7 @@ export const CmdProcessResource = (program: Command) => program
         if(characters[0]=='*') characters = await fs.promises.readdir(DATA_PATH);
 
         //产生处理数据
-        await eachChars(characters, async (character) => {
+        await mapChars({characters,func:async (character) => {
             console.log(`正在处理 ${character}`);
             const processedDir = getResProcessedDir(character);
             const audioDir = getResAudioDir(character);
@@ -81,5 +81,5 @@ export const CmdProcessResource = (program: Command) => program
                 }))).flat();
 
             await Stream.from(fnlist,8).map(fn=>fn()).apply();
-        });
+        }});
     })

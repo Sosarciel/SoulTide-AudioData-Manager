@@ -19,7 +19,7 @@ export const CmdExtractSrt = (program: Command) => program
     .action(async (characters:string[],key:string,outPath:string,opt?:{duration?:number}) => {
         const {duration} = Object.assign({duration:0},opt??{});
         const regex = new RegExp(key,'m');
-        mapChars(characters,async char =>{
+        mapChars({characters,func:async char =>{
             const caliDir = getCalibratedDir(char);
             const wavDir = getResProcessedDir(char);
             const clist = await fs.promises.readdir(caliDir);
@@ -34,5 +34,5 @@ export const CmdExtractSrt = (program: Command) => program
                 await fs.promises.cp(path.join(wavDir,wavFile), path.join(outPath,wavFile));
                 await fs.promises.cp(cpath, path.join(outPath,cfile));
             }).apply();
-        });
+        }});
     });

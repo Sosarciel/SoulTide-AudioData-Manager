@@ -1,4 +1,4 @@
-import { match, PRecord, SrtSegment, UtilFT } from "@zwa73/utils";
+import { match, PRecord, PromiseQueue, SrtSegment, UtilFT } from "@zwa73/utils";
 import { getCharDir } from "../Define";
 import { TrainingSetCharCfg, TrainingSetInfo } from "../Schema.schema";
 import { FfmpegTool } from "@zwa73/audio-utils";
@@ -45,22 +45,23 @@ export type MapCharCB<T> = (
  * @param characters 角色列表
  * @param cb 处理函数
  */
-export async function mapChars<T>(characters:string[],cb:MapCharCB<T>){
-    return await Promise.all(characters.map(async (character) => {
+export async function mapChars<T>(opt:{
+    characters:string[];
+    concurrent?:number;
+    func:MapCharCB<T>;
+}){
+    const {
+        characters, func,
+        concurrent = Infinity,
+    } = opt;
+
+    const mapQueue = new PromiseQueue({concurrent});
+    return await Promise.all(characters.map(async character => {
         const charPath = getCharDir(character);
         if(!(await UtilFT.pathExists(charPath)))
             throw `角色 ${character} 不存在`;
-        return await cb(character);
+        return await mapQueue.enqueue(async ()=>func(character));
     }));
-}
-/**同步each角色 */
-export async function eachChars<T>(characters:string[],cb:MapCharCB<T>){
-    for(const character of characters){
-        const charPath = getCharDir(character);
-        if(!(await UtilFT.pathExists(charPath)))
-            throw `角色 ${character} 不存在`;
-        await cb(character);
-    }
 }
 
 export const LangFlag = ["ja","en","zh-CN","ja-phoneme"] as const;

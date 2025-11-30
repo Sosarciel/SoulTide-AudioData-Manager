@@ -18,7 +18,7 @@ export const CmdCheckCalibrated = (program: Command) => program
     .action(async (characters:string[]) => {
         if(characters[0]=='*') characters = await fs.promises.readdir(DATA_PATH);
         characters = characters.filter(c=>c!='Kokkoro')
-        await mapChars(characters, async (character) => {
+        await mapChars({characters, func:async (character) => {
             const resourceDir = getResDir(character);
             const recognizedDir = getRecognizedDir(character);
             const cailbratedDir = getCalibratedDir(character);
@@ -37,5 +37,5 @@ export const CmdCheckCalibrated = (program: Command) => program
                     console.log(`角色 ${character} 的 ${name} 未校对`);
             }
             processedList.map(checkName)
-        });
+        }});
     })

@@ -18,7 +18,7 @@ export const CmdCheckResource = (program: Command) => program
 
         if(characters[0]=='*') characters = await fs.promises.readdir(DATA_PATH);
 
-        await mapChars(characters, async (character) => {
+        await mapChars({characters, func:async (character) => {
             const resourceDir = getResDir(character);
             const processedList = await UtilFT.fileSearchGlob(resourceDir,'processed/*');
             await Promise.all(processedList.map(async (processedPath)=>{
@@ -34,7 +34,7 @@ export const CmdCheckResource = (program: Command) => program
                     durations[character] += duration;
                 })
             }));
-        });
+        }});
         await Stream.from(funcs,16).map(ivk).apply();
 
         // 打印每个角色的总时长

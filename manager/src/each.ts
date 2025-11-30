@@ -10,7 +10,7 @@ const outPath = path.join(ROOT_PATH,"tmp","fxdot");
 
 (async()=>{
     const characters = await fs.promises.readdir(DATA_PATH);
-    mapChars(characters, async char => {
+    mapChars({characters, func:async char => {
         const caliDir = getCalibratedDir(char);
         const wavDir = getResProcessedDir(char);
         const srtlist = await UtilFT.fileSearchGlob(caliDir, '**/*.srt');
@@ -29,5 +29,5 @@ const outPath = path.join(ROOT_PATH,"tmp","fxdot");
                 }
             })
             .apply();
-    });
+    }});
 })()

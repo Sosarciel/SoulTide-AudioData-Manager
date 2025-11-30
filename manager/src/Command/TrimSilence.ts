@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { Stream, UtilFT } from '@zwa73/utils';
+import { UtilFT } from '@zwa73/utils';
 import { DATA_PATH } from '../Define';
 import { mapChars, parseStrlist } from './Util';
 import { FfmpegFlow } from '@zwa73/audio-utils';
@@ -12,7 +12,7 @@ export const CmdTrimSilence = (program: Command) => program
     .action(async (characters: string[]) => {
         const iomap:Record<string,string> = {};
 
-        await mapChars(characters, async (character) => {
+        await mapChars({characters,func:async (character) => {
             const fileMap = await UtilFT.fileSearchGlob(
                 DATA_PATH, `${character}/sliced_audio/*.wav`
             );
@@ -21,7 +21,7 @@ export const CmdTrimSilence = (program: Command) => program
                 const filePath = fileMap[file];
                 iomap[filePath] = filePath.replace('sliced_audio', 'remove_silence');
             }
-        });
+        }});
 
         await FfmpegFlow
             .trimSilence()
