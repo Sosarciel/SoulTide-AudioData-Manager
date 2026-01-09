@@ -13,7 +13,16 @@ const avg = (...numbers:number[]) =>{
     return average;
 }
 
-
+type LossSet = {
+    lossD: number;
+    lossG: number;
+    lossFm: number;
+    lossMel: number;
+    LossDur: number;
+    lossKl: number;
+    step: number;
+    lr: number;
+}
 export const CmdCalculateVITSLoss = (program: Command) => program
     .command("Calculate-VITSLoss")
     .alias("calculatevitsloss")
@@ -32,19 +41,19 @@ export const CmdCalculateVITSLoss = (program: Command) => program
                 ({lossD,lossG,lossFm,lossMel,LossDur,lossKl,step,lr}))
             .filter(({step})=>step>min);
 
-        const maxLossG   = Math.max(...lossset.map(({lossG  }) => lossG));
-        const maxLossMel = Math.max(...lossset.map(({lossMel}) => lossMel));
-        const maxLossFm  = Math.max(...lossset.map(({lossFm }) => lossFm));
-        const maxLossD   = Math.max(...lossset.map(({lossD  }) => lossD));
-        const maxLossDur = Math.max(...lossset.map(({LossDur}) => LossDur));
-        const maxLossKl  = Math.max(...lossset.map(({lossKl }) => lossKl));
+        const maxLossG   = Math.max(...lossset.map(v => v.lossG   ));
+        const maxLossMel = Math.max(...lossset.map(v => v.lossMel ));
+        const maxLossFm  = Math.max(...lossset.map(v => v.lossFm  ));
+        const maxLossD   = Math.max(...lossset.map(v => v.lossD   ));
+        const maxLossDur = Math.max(...lossset.map(v => v.LossDur ));
+        const maxLossKl  = Math.max(...lossset.map(v => v.lossKl  ));
 
-        const avgLossG   = avg(...lossset.map(({lossG  }) => lossG));
-        const avgLossMel = avg(...lossset.map(({lossMel}) => lossMel));
-        const avgLossFm  = avg(...lossset.map(({lossFm }) => lossFm));
-        const avgLossD   = avg(...lossset.map(({lossD  }) => lossD));
-        const avgLossDur = avg(...lossset.map(({LossDur}) => LossDur));
-        const avgLossKl  = avg(...lossset.map(({lossKl }) => lossKl));
+        const avgLossG   = avg(...lossset.map(v => v.lossG   ));
+        const avgLossMel = avg(...lossset.map(v => v.lossMel ));
+        const avgLossFm  = avg(...lossset.map(v => v.lossFm  ));
+        const avgLossD   = avg(...lossset.map(v => v.lossD   ));
+        const avgLossDur = avg(...lossset.map(v => v.LossDur ));
+        const avgLossKl  = avg(...lossset.map(v => v.lossKl  ));
 
         const weightGen = 1;
         const weightMel = 0.7;
