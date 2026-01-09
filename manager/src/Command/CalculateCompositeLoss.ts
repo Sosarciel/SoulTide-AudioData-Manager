@@ -33,7 +33,7 @@ export const CmdCalculateVITSLoss = (program: Command) => program
     .command("Calculate-VITSLoss")
     .alias("calculatevitsloss")
     .alias("calcvitsloss")
-    .description("根据filelist产生srt")
+    .description("计算复合loss")
     .argument('<logPath>', '输入的log路径')
     .option('-c, --count <count>', '取前count个', parseInt, 10)
     .option('-m, --min <step>', '最小step', parseInt, 0)
