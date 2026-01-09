@@ -80,7 +80,7 @@ export const CmdCalculateVITSLoss = (program: Command) => program
                     step,
                     lossD,lossG,lossFm,lossMel,LossDur,lossKl,
                 }
-            }).sort( (a,b) => a.compositeLoss - b.compositeLoss).filter((_,i)=>i<count);
+            }).sort( (a,b) => a.compositeLoss - b.compositeLoss);
         const addval = lossset.map(({lossD,lossG,lossFm,lossMel,LossDur,lossKl,step,lr},idx)=>{
                 const compositeLoss =
                     (weightGen / maxLossG   * lossG  ) +
@@ -94,10 +94,10 @@ export const CmdCalculateVITSLoss = (program: Command) => program
                     step,
                     lossD,lossG,lossFm,lossMel,LossDur,lossKl,
                 }
-            }).sort( (a,b) => a.compositeLoss - b.compositeLoss).filter((_,i)=>i<count);;
+            }).sort( (a,b) => a.compositeLoss - b.compositeLoss);
 
         console.table('mul');
-        console.table(mulval);
+        console.table(mulval.slice(0,count));
         console.table('add');
-        console.table(addval);
+        console.table(addval.slice(0,count));
     })
