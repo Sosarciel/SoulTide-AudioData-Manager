@@ -14,11 +14,17 @@ const avg = (...numbers:number[]) =>{
 }
 
 type LossSet = {
+    /**评判器 loss */
     lossD: number;
+    /**生成器 loss 生成语调与细节更好 */
     lossG: number;
+    /**特征 loss */
     lossFm: number;
+    /**梅尔频谱 loss 生成更准更自然符合人耳 */
     lossMel: number;
+    /**时长 loss */
     LossDur: number;
+    /**KL loss */
     lossKl: number;
     step: number;
     lr: number;
