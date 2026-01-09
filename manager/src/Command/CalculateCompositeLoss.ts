@@ -12,20 +12,25 @@ const avg = (...numbers:number[]) =>{
     const average = sum / numbers.length;
     return average;
 }
+
+
 export const CmdCalculateVITSLoss = (program: Command) => program
     .command("Calculate-VITSLoss")
     .alias("calculatevitsloss")
     .alias("calcvitsloss")
     .description("根据filelist产生srt")
     .argument('<logPath>', '输入的log路径')
-    .action(async (logPath:string) => {
+    .option('-c, --count <count>', '取前count个', parseInt, 10)
+    .option('-m, --min <step>', '最小step', parseInt, 0)
+    .action(async (logPath:string,{count,min}) => {
         const logtext = await fs.promises.readFile(logPath,'utf-8');
         const lossset = logtext.replace(/\r\n/g,'\n').split('\n')
             .filter(line=>(/INFO\t\[/).test(line))
             .map(line=>line.replace(/^.+INFO\t/,''))
             .map(line=>JSON.parse(line))
             .map(([lossD,lossG,lossFm,lossMel,LossDur,lossKl,step,lr])=>
-                ({lossD,lossG,lossFm,lossMel,LossDur,lossKl,step,lr}));
+                ({lossD,lossG,lossFm,lossMel,LossDur,lossKl,step,lr}))
+            .filter(({step})=>step>min);
 
         const maxLossG   = Math.max(...lossset.map(({lossG  }) => lossG));
         const maxLossMel = Math.max(...lossset.map(({lossMel}) => lossMel));
@@ -60,7 +65,7 @@ export const CmdCalculateVITSLoss = (program: Command) => program
                     step,
                     lossD,lossG,lossFm,lossMel,LossDur,lossKl,
                 }
-            }).sort( (a,b) => a.compositeLoss - b.compositeLoss).filter((_,i)=>i<10);
+            }).sort( (a,b) => a.compositeLoss - b.compositeLoss).filter((_,i)=>i<count);
         const addval = lossset.map(({lossD,lossG,lossFm,lossMel,LossDur,lossKl,step,lr},idx)=>{
                 const compositeLoss =
                     (weightGen / maxLossG   * lossG  ) +
@@ -74,7 +79,7 @@ export const CmdCalculateVITSLoss = (program: Command) => program
                     step,
                     lossD,lossG,lossFm,lossMel,LossDur,lossKl,
                 }
-            }).sort( (a,b) => a.compositeLoss - b.compositeLoss).filter((_,i)=>i<10);;
+            }).sort( (a,b) => a.compositeLoss - b.compositeLoss).filter((_,i)=>i<count);;
 
         console.table('mul');
         console.table(mulval);
