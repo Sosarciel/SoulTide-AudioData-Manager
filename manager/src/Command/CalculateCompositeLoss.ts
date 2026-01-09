@@ -47,7 +47,7 @@ export const CmdCalculateVITSLoss = (program: Command) => program
         const avgLossKl  = avg(...lossset.map(({lossKl }) => lossKl));
 
         const weightGen = 1;
-        const weightMel = 0.6;
+        const weightMel = 0.7;
         const weightFm  = 0.4;
         const weightD   = 0.2;
         const other     = 0.1;
