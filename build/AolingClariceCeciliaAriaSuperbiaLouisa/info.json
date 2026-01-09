@@ -1,0 +1,8 @@
+{
+    "sample_rate": 22050,
+    "characters": [
+        "Aoling","Clarice","Cecilia","Aria","Superbia","Louisa",
+        {"char": "Kokkoro","trainingset_duration": 3000}
+    ],
+    "filelist_format": "{filepath}|{char_index}|{raw}"
+}
